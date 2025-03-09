@@ -1,0 +1,470 @@
+{
+  "Possession": {
+    "id": [ 1322246649271025776 ],
+    "img_name": "Possession",
+    "description": "受到爆擊攻擊時，傷害降低30%，以**微風**進行反擊\n\n微風：刺擊敵人，造成2000固定傷害，回復100%傷害的血量",
+    "name": "降神",
+    "type": "special"
+  },
+  "Perception": {
+    "id": [ 1322221568792723498 ],
+    "img_name": "Perception",
+    "description": "速度提升`[等級*5]`，獲得`[10]%`物理吸血，但是防禦力下降`[50]%`，受到傷害時，傷害降低`[90%]`，並解除此效果",
+    "name": "識破",
+    "type": "special"
+  },
+  "DragonEye": {
+    "id": [ 1321511414317453442 ],
+    "img_name": "DragonEye",
+    "description": "使刃影命中後，每一層**極意**有30%對敵人造成流血，若成功造成，消耗一層疊層",
+    "name": "極意",
+    "type": "special"
+  },
+  "Enraged": {
+    "id": [ 1321523034535759922 ],
+    "img_name": "Enraged",
+    "description": "**刃影**命中時的倍率增加`[等級*5]%`，若成功造成流血效果，則有`[12*等級]%`額外造成一個流血效果，一回合最多額外造成1個**流血**",
+    "name": "龍之血",
+    "type": "special"
+  },
+  "stic_att_up": {
+    "id": [
+      1313608340433276960,
+      1314268855471837259
+    ],
+    "img_name": "stic_att_up",
+    "description": "攻擊力增加50%",
+    "name": "攻擊力增加",
+    "type": "good"
+  },
+  "stic_speed_up": {
+    "id": [
+      1313608602308710423,
+      1314268860311932948
+    ],
+    "img_name": "stic_speed_up",
+    "description": "速度提升30%",
+    "name": "速度提升",
+    "type": "good"
+  },
+  "stic_def_up": {
+    "id": [
+      1313608608625201213,
+      1314268864078676009
+    ],
+    "img_name": "stic_def_up",
+    "description": "雙防提升60%",
+    "name": "防禦提升",
+    "type": "good"
+  },
+  "stic_invincible": {
+    "id": [
+      1313608615923552346,
+      1314268868507734097
+    ],
+    "img_name": "stic_invincible",
+    "description": "免疫一切傷害",
+    "name": "無敵",
+    "type": "good"
+  },
+  "stic_immortality": {
+    "id": [
+      1313608620499271711,
+      1314268873658204200
+    ],
+    "img_name": "stic_immortality",
+    "description": "遭受傷害後，最低會留下1HP",
+    "name": "不死",
+    "type": "good"
+  },
+  "stic_protect": {
+    "id": [
+      1313608625851334776,
+      1314268877898911754
+    ],
+    "img_name": "stic_protect",
+    "description": "抵銷受到的傷害",
+    "name": "防護罩",
+    "type": "good"
+  },
+  "stic_crires_up": {
+    "id": [
+      1313608630414737539,
+      1314268882512646216
+    ],
+    "img_name": "stic_crires_up",
+    "description": "提升50%暴擊率抗性",
+    "name": "暴擊率抗性提升",
+    "type": "good"
+  },
+  "stic_heal": {
+    "id": [
+      1313608635187855370,
+      1314268886127874202
+    ],
+    "img_name": "stic_heal",
+    "description": "回合開始時，回復角色5%血量",
+    "name": "治療",
+    "type": "good"
+  },
+  "stic_counter": {
+    "id": [
+      1313608968190427226,
+      1314268890829951037
+    ],
+    "img_name": "stic_counter",
+    "description": "受擊後，以普通攻擊反擊，可觸發特效",
+    "name": "反擊",
+    "type": "good"
+  },
+  "stic_hide": {
+    "id": [
+      1313608973026459769,
+      1314268894940368911
+    ],
+    "img_name": "stic_hide",
+    "description": "無法被選取，當受到全體攻擊時，傷害量小幅減少",
+    "name": "隱身",
+    "type": "good"
+  },
+  "stic_bless": {
+    "id": [
+      1313608977539534849,
+      1314268899067564184
+    ],
+    "img_name": "stic_bless",
+    "description": "死亡時，以50%血量復活，消除此效果",
+    "name": "復甦",
+    "type": "good"
+  },
+  "stic_cri_up": {
+    "id": [
+      1313608982476230717,
+      1314268903123193856
+    ],
+    "img_name": "stic_cri_up",
+    "description": "暴擊率提升40%",
+    "name": "暴擊率提升",
+    "type": "good"
+  },
+  "stic_debuf_impossible": {
+    "id": [
+      1313608987287097355,
+      1314268907267162153
+    ],
+    "img_name": "stic_debuf_impossible",
+    "description": "免疫負面效果",
+    "name": "免疫",
+    "type": "good"
+  },
+  "cleanse": {
+    "id": [
+      1313608994698428487,
+      1314268911319121930
+    ],
+    "img_name": "cleanse",
+    "description": "受到負面效果時，清除所有負面效果並回復血量，消除此效果",
+    "name": "清醒",
+    "type": "good"
+  },
+  "evasion": {
+    "id": [
+      1313609003623907458,
+      1314268915089670235
+    ],
+    "img_name": "evasion",
+    "description": "迴避提升30%",
+    "name": "迴避提升",
+    "type": "good"
+  },
+  "Skill_Nullifier": {
+    "id": [
+      1313609320444858440,
+      1314268918952755250
+    ],
+    "img_name": "Skill_Nullifier",
+    "description": "抵擋一次技能傷害，抵擋成功後，提升5%速度",
+    "name": "技能傷害免疫",
+    "type": "good"
+  },
+  "Increased_Attack_Greater": {
+    "id": [
+      1313609400690413568,
+      1314268922890948738
+    ],
+    "img_name": "Increased_Attack_Greater",
+    "description": "攻擊力增加80%",
+    "name": "大幅增加攻擊力",
+    "type": "good"
+  },
+  "Critical_Damage_Increase": {
+    "id": [
+      1313609741989318677,
+      1314268927680974888
+    ],
+    "img_name": "Critical_Damage_Increase",
+    "description": "暴擊傷害增加50%",
+    "name": "暴擊傷害增加",
+    "type": "good"
+  },
+  "Effect_Resistance": {
+    "id": [
+      1313609751443148870,
+      1314268936279167076
+    ],
+    "img_name": "Effect_Resistance",
+    "description": "效果抗性增加40",
+    "name": "效果抗性增加",
+    "type": "good"
+  },
+  "Effectiveness": {
+    "id": [
+      1313609758573330494,
+      1314268940725391400
+    ],
+    "img_name": "Effectiveness",
+    "description": "效果命中增加40",
+    "name": "效果命中增加",
+    "type": "good"
+  },
+  "stic_def_dn": {
+    "id": [
+      1313609763598372948,
+      1314268944881680546
+    ],
+    "img_name": "stic_def_dn",
+    "description": "雙防減少60%",
+    "name": "防禦力減少",
+    "type": "bad"
+  },
+  "stic_dodge_dn": {
+    "id": [
+      1313609768669286462,
+      1314268948664942663
+    ],
+    "img_name": "stic_dodge_dn",
+    "description": "速度下降30%",
+    "name": "速度下降",
+    "type": "bad"
+  },
+  "stic_att_dn": {
+    "id": [
+      1313609774277070930,
+      1314268953316425749
+    ],
+    "img_name": "stic_att_dn",
+    "description": "攻擊力下降50%",
+    "name": "攻擊力下降",
+    "type": "bad"
+  },
+  "stic_stun": {
+    "id": [
+      1313609779373015080,
+      1314268957364191386
+    ],
+    "img_name": "stic_stun",
+    "description": "無法行動，輪到該角色時，消除此效果",
+    "name": "暈眩",
+    "type": "bad"
+  },
+  "stic_heal_impossible": {
+    "id": [
+      1313609784393470125,
+      1314268961197654129
+    ],
+    "img_name": "stic_heal_impossible",
+    "description": "無法回復血量",
+    "name": "無法回復",
+    "type": "bad"
+  },
+  "stic_blaze": {
+    "id": [
+      1313610097364041910,
+      1314268965094166548
+    ],
+    "img_name": "stic_blaze",
+    "description": "根據目前生命等比受到傷害",
+    "name": "燒傷",
+    "type": "bad"
+  },
+  "stic_buf_impossible": {
+    "id": [
+      1313610101927579731,
+      1314268968986476555
+    ],
+    "img_name": "stic_buf_impossible",
+    "description": "無法獲得任何強化效果",
+    "name": "無法強化",
+    "type": "bad"
+  },
+  "stic_sleep": {
+    "id": [
+      1313610106642104351,
+      1314268974304727040
+    ],
+    "img_name": "stic_sleep",
+    "description": "無法行動，輪到該角色或是被攻擊時，消除此效果",
+    "name": "睡眠",
+    "type": "bad"
+  },
+  "stic_dot": {
+    "id": [
+      1313610111649845311,
+      1314268977786257470
+    ],
+    "img_name": "stic_dot",
+    "description": "根據目前生命等比受到傷害",
+    "name": "中毒",
+    "type": "bad"
+  },
+  "stic_provoke": {
+    "id": [
+      1313610116444192789,
+      1314268982013984770
+    ],
+    "img_name": "stic_provoke",
+    "description": "強制角色普攻挑釁目標，攻擊MP回復降低70%，可觸發特效",
+    "name": "挑釁",
+    "type": "bad"
+  },
+  "stic_cridmg_dn": {
+    "id": [
+      1313610121556918353,
+      1314268986401230898
+    ],
+    "img_name": "stic_cridmg_dn",
+    "description": "減少50%暴擊抗性",
+    "name": "減少暴擊抗性",
+    "type": "bad"
+  },
+  "stic_blind": {
+    "id": [
+      1313610125898027091,
+      1314268990457253890
+    ],
+    "img_name": "stic_blind",
+    "description": "命中率減少30%",
+    "name": "致盲",
+    "type": "bad"
+  },
+  "stic_silence": {
+    "id": [
+      1313610130767745066,
+      1314268994412216350
+    ],
+    "img_name": "stic_silence",
+    "description": "只能釋放普通攻擊，詠唱會被中斷",
+    "name": "沉默",
+    "type": "bad"
+  },
+  "stic_blood": {
+    "id": [
+      1313610136463478794,
+      1314268998388682772
+    ],
+    "img_name": "stic_blood",
+    "description": "根據目前生命等比受到傷害",
+    "name": "流血",
+    "type": "bad"
+  },
+  "stic_vampire": {
+    "id": [
+      1313610141043527771,
+      1314269002515877908
+    ],
+    "img_name": "stic_vampire",
+    "description": "造成傷害後，將造成的10%傷害反彈給自己",
+    "name": "吸血之手",
+    "type": "bad"
+  },
+  "target_debuff_e7": {
+    "id": [
+      1313610682041761864,
+      1314269006613712896
+    ],
+    "img_name": "target_debuff_e7",
+    "description": "受到的傷害、命中率增加30%",
+    "name": "標靶",
+    "type": "bad"
+  },
+  "stic_nail": {
+    "id": [
+      1313610686898765875,
+      1314269011198083122
+    ],
+    "img_name": "stic_nail",
+    "description": "速度無法改變，回合開始時，受到最大生命5%的傷害",
+    "name": "固定",
+    "type": "bad"
+  },
+  "Restrict": {
+    "id": [
+      1313610691575418992,
+      1314269015522414592
+    ],
+    "img_name": "Restrict",
+    "description": "速度無法提升",
+    "name": "定影",
+    "type": "bad"
+  },
+  "Seal_icon": {
+    "id": [
+      1313610696398999558,
+      1314269019947274321
+    ],
+    "img_name": "Seal_icon",
+    "description": "無法施展所有被動效果",
+    "name": "封印",
+    "type": "bad"
+  },
+  "Stigma": {
+    "id": [
+      1313610701453132029,
+      1314269024326127647
+    ],
+    "img_name": "Stigma",
+    "description": "獲得的資源量減少50%",
+    "name": "烙印",
+    "type": "bad"
+  },
+  "Venom": {
+    "id": [
+      1313610706385502238,
+      1314269028126298204
+    ],
+    "img_name": "Venom",
+    "description": "回合開始時，受到最大生命10%的傷害，只對玩家生效",
+    "name": "劇毒",
+    "type": "bad"
+  },
+  "beguile": {
+    "id": [
+      1313610888330346496,
+      1314269032278659123
+    ],
+    "img_name": "beguile",
+    "description": "回合開始時，所有隊友受到自身血量上限10%的傷害，並消除此效果，只對玩家生效",
+    "name": "迷惑",
+    "type": "bad"
+  },
+  "cannot_counterattack": {
+    "id": [
+      1313610894235799642,
+      1314269036909170698
+    ],
+    "img_name": "cannot_counterattack",
+    "description": "無法反擊。",
+    "name": "無法反擊",
+    "type": "bad"
+  },
+  "rip~3": {
+    "id": [
+      1313622243582017708,
+      1314269817007636581
+    ],
+    "img_name": "rip~3",
+    "description": "死亡時，無法復活",
+    "name": "滅亡",
+    "type": "bad"
+  }
+}

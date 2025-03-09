@@ -1,0 +1,1733 @@
+{
+  "製藥師": {
+    "神速魔壺": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 3000
+        },
+        {
+          "name": "很快的藥草",
+          "count": 3
+        }
+      ],
+      "per": 1,
+      "des": "增加750ASPD 750CSPD",
+      "kind": "drug",
+      "drug_type": "速度類",
+      "effect": [
+        {
+          "type": "+",
+          "index": "ASPD",
+          "attribute": "aspd",
+          "value": 750
+        },
+        {
+          "type": "+",
+          "index": "CSPD",
+          "attribute": "cspd",
+          "value": 750
+        }
+      ]
+    },
+    "彭湃藥丸": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 2000
+        }
+      ],
+      "per": 1,
+      "des": "增加25%的ATK",
+      "kind": "drug",
+      "drug_type": "攻擊類",
+      "effect": [
+        {
+          "type": "x",
+          "index": "ATK",
+          "attribute": "atk",
+          "value": 25
+        }
+      ]
+    },
+    "魔導秘藥": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 2000
+        }
+      ],
+      "per": 1,
+      "des": "增加25%的MATK",
+      "kind": "drug",
+      "drug_type": "魔法攻擊類",
+      "effect": [
+        {
+          "type": "x",
+          "index": "MATK",
+          "attribute": "matk",
+          "value": 25
+        }
+      ]
+    },
+    "熔岩附魔": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 2000
+        }
+      ],
+      "per": 1,
+      "des": "增加15%的物理貫穿",
+      "kind": "drug",
+      "drug_type": "攻擊類",
+      "effect": [
+        {
+          "type": "+",
+          "index": "物理貫穿",
+          "attribute": "p.p",
+          "value": 15
+        }
+      ]
+    },
+    "魔法文字": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 2000
+        }
+      ],
+      "per": 1,
+      "des": "增加15%的魔法貫穿",
+      "kind": "drug",
+      "drug_type": "魔法攻擊類",
+      "effect": [
+        {
+          "type": "+",
+          "index": "魔法貫穿",
+          "attribute": "m.p",
+          "value": 15
+        }
+      ]
+    },
+    "紅藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 50
+        }
+      ],
+      "per": 1,
+      "des": "回復50生命值",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 50
+        }
+      ]
+    },
+    "中紅藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 250
+        }
+      ],
+      "per": 1,
+      "des": "回復250生命值",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 250
+        }
+      ]
+    },
+    "大紅藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 500
+        }
+      ],
+      "per": 1,
+      "des": "回復500生命值",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 500
+        }
+      ]
+    },
+    "藍藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 50
+        }
+      ],
+      "per": 1,
+      "des": "回復50魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 50
+        }
+      ]
+    },
+    "中藍藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 250
+        }
+      ],
+      "per": 1,
+      "des": "回復250魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 250
+        }
+      ]
+    },
+    "大藍藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 500
+        }
+      ],
+      "per": 1,
+      "des": "回復250魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 500
+        }
+      ]
+    },
+    "紫藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 100
+        }
+      ],
+      "per": 1,
+      "des": "回復50生命值 50魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 50
+        },
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 50
+        }
+      ]
+    },
+    "中紫藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 500
+        }
+      ],
+      "per": 1,
+      "des": "回復250生命值 250魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 250
+        },
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 250
+        }
+      ]
+    },
+    "大紫藥水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 1000
+        }
+      ],
+      "per": 1,
+      "des": "回復500生命值 500魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "+",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 500
+        },
+        {
+          "type": "+",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 500
+        }
+      ]
+    },
+    "精靈的淚水": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 30000
+        },
+        {
+          "name": "魔素",
+          "count": 10000
+        }
+      ],
+      "per": 1,
+      "des": "完全回復生命與魔力",
+      "kind": "drug",
+      "drug_type": null,
+      "effect": [
+        {
+          "type": "x",
+          "index": "current_hp",
+          "attribute": "current_hp",
+          "value": 100
+        },
+        {
+          "type": "x",
+          "index": "current_mp",
+          "attribute": "current_mp",
+          "value": 100
+        }
+      ]
+    },
+    "能量飲料": {
+      "meterial": [
+        {
+          "name": "濃縮能量棒",
+          "count": 2
+        }
+      ],
+      "per": 1,
+      "des": "回復50能量",
+      "kind": "energy",
+      "drug_type": null,
+      "value": 50,
+      "effect": null
+    },
+    "能量飲料Pro": {
+      "meterial": [
+        {
+          "name": "濃縮能量棒",
+          "count": 4
+        }
+      ],
+      "per": 1,
+      "des": "回復100能量",
+      "kind": "energy",
+      "drug_type": null,
+      "value": 100,
+      "effect": null
+    },
+    "能量飲料Pro Max": {
+      "meterial": [
+        {
+          "name": "濃縮能量棒",
+          "count": 7
+        }
+      ],
+      "per": 1,
+      "des": "回復150能量",
+      "kind": "energy",
+      "drug_type": null,
+      "value": 150,
+      "effect": null
+    },
+    "終極能量飲": {
+      "meterial": [
+        {
+          "name": "濃縮能量棒",
+          "count": 9
+        }
+      ],
+      "per": 1,
+      "des": "回復200能量",
+      "kind": "energy",
+      "drug_type": null,
+      "value": 200,
+      "effect": null
+    }
+  },
+  "製裝師": {
+    "綻晶劍": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 3000
+        },
+        {
+          "name": "綻晶體",
+          "count": 3
+        }
+      ],
+      "per": 1,
+      "des": "暴擊率+5 暴擊傷害+3",
+      "kind": "equip",
+      "category": "單手劍",
+      "refine": 0,
+      "slot": [ "主手", "副手" ],
+      "f_atk": 100,
+      "effect": [
+        {
+          "type": "+",
+          "index": "暴擊率",
+          "attribute": "crit_rate",
+          "value": 5
+        },
+        {
+          "type": "+",
+          "index": "暴擊傷害",
+          "attribute": "crit_dmg",
+          "value": 3
+        }
+      ]
+    },
+    "羊角長槍": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 1500
+        },
+        {
+          "name": "獸品",
+          "count": 1500
+        }
+      ],
+      "per": 1,
+      "des": "STR+5 AGI+1%",
+      "kind": "equip",
+      "category": "旋風槍",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 150,
+      "effect": [
+        {
+          "type": "+",
+          "index": "STR",
+          "attribute": "str",
+          "value": 5
+        },
+        {
+          "type": "x",
+          "index": "AGI",
+          "attribute": "agi",
+          "value": 1
+        }
+      ]
+    },
+    "晴天": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 1500
+        },
+        {
+          "name": "木材",
+          "count": 1500
+        }
+      ],
+      "per": 1,
+      "des": "STR+5 AGI+1%",
+      "kind": "equip",
+      "category": "拔刀劍",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 60,
+      "effect": [
+        {
+          "type": "+",
+          "index": "STR",
+          "attribute": "str",
+          "value": 5
+        },
+        {
+          "type": "x",
+          "index": "AGI",
+          "attribute": "agi",
+          "value": 1
+        }
+      ]
+    },
+    "狼牙棒": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 4500
+        },
+        {
+          "name": "磨平的狼牙",
+          "count": 5
+        }
+      ],
+      "per": 1,
+      "des": "ATK+50 ASPD-20% 速度-20%",
+      "kind": "equip",
+      "category": "雙手劍",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 250,
+      "effect": [
+        {
+          "type": "+",
+          "index": "ATK",
+          "attribute": "atk",
+          "value": 20
+        },
+        {
+          "type": "x",
+          "index": "ASPD",
+          "attribute": "aspd",
+          "value": -20
+        },
+        {
+          "type": "x",
+          "index": "速度",
+          "attribute": "speed",
+          "value": -20
+        }
+      ]
+    },
+    "金屬連弩": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 5500
+        }
+      ],
+      "per": 1,
+      "des": "等效命中+5",
+      "kind": "equip",
+      "category": "連弩",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 20,
+      "effect": [
+        {
+          "type": "+",
+          "index": "等效命中",
+          "attribute": "equ_hit",
+          "value": 5
+        }
+      ]
+    },
+    "詠唱書本": {
+      "meterial": [
+        {
+          "name": "木材",
+          "count": 2000
+        },
+        {
+          "name": "布料",
+          "count": 1500
+        },
+        {
+          "name": "魔素",
+          "count": 500
+        }
+      ],
+      "per": 1,
+      "des": "INT+3% CSPD+3% CSPD+50",
+      "kind": "equip",
+      "category": "法杖",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 100,
+      "effect": [
+        {
+          "type": "x",
+          "index": "INT",
+          "attribute": "int",
+          "value": 3
+        },
+        {
+          "type": "x",
+          "index": "CSPD",
+          "attribute": "cspd",
+          "value": 3
+        },
+        {
+          "type": "+",
+          "index": "CSPD",
+          "attribute": "cspd",
+          "value": 50
+        }
+      ]
+    },
+    "雨林弓": {
+      "meterial": [
+        {
+          "name": "藥品",
+          "count": 2000
+        },
+        {
+          "name": "金屬",
+          "count": 2000
+        }
+      ],
+      "per": 1,
+      "des": "ATK+30",
+      "kind": "equip",
+      "category": "弓",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 80,
+      "effect": [
+        {
+          "type": "+",
+          "index": "ATK",
+          "attribute": "atk",
+          "value": 30
+        }
+      ]
+    },
+    "格鬥拳套": {
+      "meterial": [
+        {
+          "name": "金屬",
+          "count": 500
+        },
+        {
+          "name": "布料",
+          "count": 2500
+        }
+      ],
+      "per": 1,
+      "des": "DEF+30 MDEF+30",
+      "kind": "equip",
+      "category": "拳套",
+      "refine": 0,
+      "slot": [ "主手" ],
+      "f_atk": 100,
+      "effect": [
+        {
+          "type": "+",
+          "index": "DEF",
+          "attribute": "def",
+          "value": 30
+        },
+        {
+          "type": "+",
+          "index": "DEF",
+          "attribute": "mdef",
+          "value": 30
+        }
+      ]
+    },
+    "鐵甲": {
+      "meterial": [
+        {
+          "name": "布料",
+          "count": 1000
+        },
+        {
+          "name": "金屬",
+          "count": 5000
+        }
+      ],
+      "per": 1,
+      "des": "def+5%",
+      "kind": "equip",
+      "category": "胸甲",
+      "refine": 0,
+      "slot": [ "胸甲" ],
+      "f_def": 75,
+      "effect": [
+        {
+          "type": "x",
+          "index": "def",
+          "attribute": "def%",
+          "value": 5
+        }
+      ]
+    },
+    "騎士團標準護腿": {
+      "meterial": [
+        {
+          "name": "布料",
+          "count": 2000
+        },
+        {
+          "name": "金屬",
+          "count": 3000
+        },
+        {
+          "name": "精緻加工金屬",
+          "count": 3
+        }
+      ],
+      "per": 1,
+      "des": "等效防禦+1%",
+      "kind": "equip",
+      "category": "護腿",
+      "refine": 0,
+      "slot": [ "護腿" ],
+      "f_def": 50,
+      "effect": [
+        {
+          "type": "x",
+          "index": "等效防禦",
+          "attribute": "equ_def",
+          "value": 1
+        }
+      ]
+    },
+    "小破鞋": {
+      "meterial": [
+        {
+          "name": "布料",
+          "count": 3000
+        },
+        {
+          "name": "金屬",
+          "count": 1000
+        }
+      ],
+      "per": 1,
+      "des": "\"都是小破鞋了為什麼還那麼貴！？\"速度+5",
+      "kind": "equip",
+      "category": "靴子",
+      "refine": 0,
+      "slot": [ "靴子" ],
+      "f_def": 50,
+      "effect": [
+        {
+          "type": "+",
+          "index": "速度",
+          "attribute": "speed",
+          "value": 5
+        }
+      ]
+    }
+  },
+  "合成師": {
+    "藥品類": {
+      "很快的藥草": {
+        "meterial": [
+          {
+            "name": "藥品",
+            "count": 500
+          }
+        ],
+        "per": 1,
+        "des": "",
+        "kind": "item",
+        "effect": null
+      }
+    },
+    "武器類": {
+      "綻晶體": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 500
+          },
+          {
+            "name": "魔素",
+            "count": 1000
+          }
+        ],
+        "per": 1,
+        "des": "",
+        "kind": "item",
+        "effect": null
+      },
+      "磨平的狼牙": {
+        "meterial": [
+          {
+            "name": "獸品",
+            "count": 100
+          }
+        ],
+        "per": 1,
+        "des": "",
+        "kind": "item",
+        "effect": null
+      },
+      "精緻加工金屬": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 1000
+          },
+          {
+            "name": "魔素",
+            "count": 100
+          }
+        ],
+        "per": 1,
+        "des": "",
+        "kind": "item",
+        "effect": null
+      }
+    },
+    "精煉類": {
+      "魔力碎屑": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 5
+          },
+          {
+            "name": "金屬",
+            "count": 5
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+10",
+        "kind": "refine",
+        "refine_pt": 10,
+        "effect": null
+      },
+      "魔力石": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 25
+          },
+          {
+            "name": "金屬",
+            "count": 25
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+50",
+        "kind": "refine",
+        "refine_pt": 50,
+        "effect": null
+      },
+      "充盈的魔力石": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 50
+          },
+          {
+            "name": "金屬",
+            "count": 50
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+100",
+        "kind": "refine",
+        "refine_pt": 100,
+        "effect": null
+      },
+      "賢者之心": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 125
+          },
+          {
+            "name": "金屬",
+            "count": 125
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+250",
+        "kind": "refine",
+        "refine_pt": 250,
+        "effect": null
+      },
+      "深淵的回聲": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 200
+          },
+          {
+            "name": "金屬",
+            "count": 200
+          },
+          {
+            "name": "獸品",
+            "count": 100
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+500",
+        "kind": "refine",
+        "refine_pt": 500,
+        "effect": null
+      },
+      "紫晶之夢": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 500
+          },
+          {
+            "name": "金屬",
+            "count": 500
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+1000",
+        "kind": "refine",
+        "refine_pt": 1000,
+        "effect": null
+      },
+      "深林的記憶": {
+        "meterial": [
+          {
+            "name": "藥品",
+            "count": 1250
+          },
+          {
+            "name": "魔素",
+            "count": 1250
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+2500",
+        "kind": "refine",
+        "refine_pt": 2500,
+        "effect": null
+      },
+      "沉淪之心": {
+        "meterial": [
+          {
+            "name": "藥品",
+            "count": 2000
+          },
+          {
+            "name": "魔素",
+            "count": 2000
+          },
+          {
+            "name": "金屬",
+            "count": 1000
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+5000",
+        "kind": "refine",
+        "refine_pt": 5000,
+        "effect": null
+      },
+      "追憶之注連": {
+        "meterial": [
+          {
+            "name": "布料",
+            "count": 4000
+          },
+          {
+            "name": "魔素",
+            "count": 4000
+          },
+          {
+            "name": "獸品",
+            "count": 2000
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+10000",
+        "kind": "refine",
+        "refine_pt": 10000,
+        "effect": null
+      },
+      "蒼白之火": {
+        "meterial": [
+          {
+            "name": "木材",
+            "count": 11000
+          },
+          {
+            "name": "魔素",
+            "count": 11000
+          },
+          {
+            "name": "金屬",
+            "count": 3000
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+25000",
+        "kind": "refine",
+        "refine_pt": 25000,
+        "effect": null
+      },
+      "\"盛怒\"": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 25000
+          },
+          {
+            "name": "獸品",
+            "count": 25000
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+50000",
+        "kind": "refine",
+        "refine_pt": 50000,
+        "effect": null
+      },
+      "\"終末\"": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 30000
+          },
+          {
+            "name": "金屬",
+            "count": 30000
+          },
+          {
+            "name": "獸品",
+            "count": 40000
+          }
+        ],
+        "per": 1,
+        "des": "精煉PT+100000",
+        "kind": "refine",
+        "refine_pt": 100000,
+        "effect": null
+      }
+    },
+    "穿孔類": {
+      "平凡的穿孔錘": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 5000
+          },
+          {
+            "name": "魔素",
+            "count": 1000
+          }
+        ],
+        "per": 1,
+        "des": "可用於鑲嵌孔1",
+        "slot1_p": 25,
+        "slot2_p": null,
+        "kind": "sloting",
+        "effect": null
+      },
+      "稀有的穿孔錘": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 10000
+          },
+          {
+            "name": "魔素",
+            "count": 2000
+          }
+        ],
+        "per": 1,
+        "des": "可用於鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 35,
+        "slot2_p": 5,
+        "kind": "sloting",
+        "effect": null
+      },
+      "工匠的穿孔錘": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 15000
+          },
+          {
+            "name": "魔素",
+            "count": 3500
+          }
+        ],
+        "per": 1,
+        "des": "可用於鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 65,
+        "slot2_p": 5,
+        "kind": "sloting",
+        "effect": null
+      },
+      "精造的穿孔錘": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 20000
+          },
+          {
+            "name": "魔素",
+            "count": 5000
+          }
+        ],
+        "per": 1,
+        "des": "可用於鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 95,
+        "slot2_p": 5,
+        "kind": "sloting",
+        "effect": null
+      },
+      "精靈的祝福": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 15000
+          },
+          {
+            "name": "魔素",
+            "count": 15000
+          },
+          {
+            "name": "藥品",
+            "count": 15000
+          }
+        ],
+        "per": 1,
+        "des": "可用於開啟鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 100,
+        "slot2_p": 25,
+        "kind": "sloting",
+        "effect": null
+      },
+      "苑": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 35000
+          },
+          {
+            "name": "魔素",
+            "count": 25000
+          },
+          {
+            "name": "藥品",
+            "count": 35000
+          }
+        ],
+        "per": 1,
+        "des": "可用於開啟鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 100,
+        "slot2_p": 45,
+        "kind": "sloting",
+        "effect": null
+      },
+      "諧律": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 50000
+          },
+          {
+            "name": "魔素",
+            "count": 60000
+          },
+          {
+            "name": "藥品",
+            "count": 50000
+          }
+        ],
+        "per": 1,
+        "des": "可用於開啟鑲嵌孔1 鑲嵌孔2",
+        "slot1_p": 100,
+        "slot2_p": 75,
+        "kind": "sloting",
+        "effect": null
+      },
+      "蒼焰的祝福": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 75000
+          },
+          {
+            "name": "魔素",
+            "count": 75000
+          },
+          {
+            "name": "獸品",
+            "count": 75000
+          }
+        ],
+        "per": 1,
+        "des": "必定開啟鑲嵌孔1 鑲嵌孔2(其一)",
+        "slot1_p": 100,
+        "slot2_p": 100,
+        "kind": "sloting",
+        "effect": null
+      },
+      "抽取鍛晶": {
+        "meterial": [
+          {
+            "name": "金屬",
+            "count": 5000
+          },
+          {
+            "name": "魔素",
+            "count": 5000
+          }
+        ],
+        "per": 1,
+        "des": "可以安全地抽下鍛晶",
+        "kind": "extract",
+        "effect": null
+      }
+    },
+    "特殊類": {
+      "主職業重製書": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 100000
+          }
+        ],
+        "per": 1,
+        "des": "重製你的主職業",
+        "kind": "reset",
+        "drug_type": null,
+        "effect": null
+      },
+      "副職業重製書": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 50000
+          }
+        ],
+        "per": 1,
+        "des": "重製你的副職業",
+        "kind": "reset",
+        "drug_type": null,
+        "effect": null
+      },
+      "性別重製書": {
+        "meterial": [
+          {
+            "name": "魔素",
+            "count": 100000
+          }
+        ],
+        "per": 1,
+        "des": "重製你的性別",
+        "kind": "reset",
+        "drug_type": null,
+        "effect": null
+      },
+      "濃縮能量棒": {
+        "meterial": [
+          {
+            "name": "牛/豬/羊/熊/鴨/雞肉 其一",
+            "count": 1
+          }
+        ],
+        "per": 1,
+        "des": "回復20能量",
+        "kind": "energy",
+        "drug_type": null,
+        "value": 20,
+        "effect": null
+      }
+    }
+  },
+  "獵人": {
+    "pts": [ 10, 30, 50, 100, 150, 200, 250, 300, 400, 550, 600, 750, 1000 ],
+    "coin": [ 10, 20, 30, 40, 50, 100, 200, 250 ],
+    "meat": [
+      {
+        "name": "熊肉",
+        "per": 1,
+        "des": "不可生食",
+        "kind": "item",
+        "effect": null
+      },
+      {
+        "name": "豬肉",
+        "per": 1,
+        "des": "不可生食",
+        "kind": "item",
+        "effect": null
+      },
+      {
+        "name": "牛肉",
+        "per": 1,
+        "des": "不可生食",
+        "kind": "item",
+        "effect": null
+      },
+      {
+        "name": "雞肉",
+        "per": 1,
+        "des": "不可生食",
+        "kind": "item",
+        "effect": null
+      },
+      {
+        "name": "鴨肉",
+        "per": 1,
+        "des": "呱",
+        "kind": "item",
+        "effect": null
+      },
+      {
+        "name": "羊肉",
+        "per": 1,
+        "des": "不可生食",
+        "kind": "item",
+        "effect": null
+      }
+    ],
+    "equip": [
+      {
+        "name": "獵人披風",
+        "per": 1,
+        "des": "恨意值-5 速度+1% HP上限-80%",
+        "kind": "equip",
+        "slot": [
+          "胸甲"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "胸甲",
+        "f_def": 50,
+        "effect": [
+          {
+            "type": "-",
+            "index": "恨意值",
+            "attribute": "aggro",
+            "value": 5
+          },
+          {
+            "type": "x",
+            "index": "速度",
+            "attribute": "speed%",
+            "value": 1
+          },
+          {
+            "type": "-",
+            "index": "HP上限%",
+            "attribute": "hp%",
+            "value": 80
+          }
+        ]
+      },
+      {
+        "name": "獵人遺落的煙斗",
+        "per": 1,
+        "des": "STR+1% DEX+1% INT+1%",
+        "kind": "equip",
+        "slot": [
+          "頭部"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "頭部",
+        "f_def": 50,
+        "effect": [
+          {
+            "type": "x",
+            "index": "STR",
+            "attribute": "str%",
+            "value": 1
+          },
+          {
+            "type": "x",
+            "index": "DEX",
+            "attribute": "dex%",
+            "value": 1
+          },
+          {
+            "type": "x",
+            "index": "INT",
+            "attribute": "int%",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "粗劣毛皮褲",
+        "per": 1,
+        "des": "暴擊率+3 暴擊率+1% 穩定率-90% 攻擊MP回復+1",
+        "kind": "equip",
+        "slot": [
+          "護腿"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "護腿",
+        "f_def": 50,
+        "effect": [
+          {
+            "type": "+",
+            "index": "暴擊率",
+            "attribute": "crit_rate",
+            "value": 3
+          },
+          {
+            "type": "x",
+            "index": "暴擊率",
+            "attribute": "crit_rate%",
+            "value": 1
+          },
+          {
+            "type": "x",
+            "index": "穩定率",
+            "attribute": "stable",
+            "value": -90
+          },
+          {
+            "type": "+",
+            "index": "攻擊MP回復",
+            "attribute": "ampr",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "獵人的愛靴",
+        "per": 1,
+        "des": "速度+3 速度+1%",
+        "kind": "equip",
+        "slot": [
+          "靴子"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "靴子",
+        "f_def": 50,
+        "effect": [
+          {
+            "type": "+",
+            "index": "速度",
+            "attribute": "speed",
+            "value": 3
+          },
+          {
+            "type": "x",
+            "index": "速度",
+            "attribute": "speed%",
+            "value": 1
+          }
+        ]
+      }
+    ]
+  },
+  "礦工": {
+    "pts": [ 10, 30, 50, 100, 150, 200, 250, 300, 400, 550, 600, 750 ],
+    "魔素": [ 10, 30, 50, 100, 150, 200, 250 ],
+    "coin": [ 10, 20, 30, 40, 50, 100 ],
+    "equip": [
+      {
+        "name": "遺失的礦工靴",
+        "per": 1,
+        "des": "速度+5 速度+2% HP上限+50",
+        "kind": "equip",
+        "slot": [
+          "靴子"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "靴子",
+        "f_def": 50,
+        "effect": [
+          {
+            "type": "+",
+            "index": "速度",
+            "attribute": "speed",
+            "value": 5
+          },
+          {
+            "type": "x",
+            "index": "速度",
+            "attribute": "speed%",
+            "value": 2
+          },
+          {
+            "type": "+",
+            "index": "HP上限",
+            "attribute": "hp",
+            "value": 50
+          }
+        ]
+      },
+      {
+        "name": "礦工的探照燈",
+        "per": 1,
+        "des": "ASPD+100 VIT+5 等效防禦+5%",
+        "kind": "equip",
+        "slot": [
+          "頭部"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "頭部",
+        "f_def": 5,
+        "effect": [
+          {
+            "type": "+",
+            "index": "ASPD",
+            "attribute": "aspd",
+            "value": 100
+          },
+          {
+            "type": "+",
+            "index": "VIT",
+            "attribute": "vit",
+            "value": 5
+          },
+          {
+            "type": "x",
+            "index": "等效防禦",
+            "attribute": "equ_def",
+            "value": 5
+          }
+        ]
+      },
+      {
+        "name": "防火甲",
+        "per": 1,
+        "des": "MDEF+20 MDEF+5% DEF+20 DEF+5%",
+        "kind": "equip",
+        "slot": [
+          "胸甲"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "胸甲",
+        "f_def": 30,
+        "effect": [
+          {
+            "type": "+",
+            "index": "MDEF",
+            "attribute": "mdef",
+            "value": 20
+          },
+          {
+            "type": "x",
+            "index": "MDEF",
+            "attribute": "mdef%",
+            "value": 5
+          },
+          {
+            "type": "+",
+            "index": "DEF",
+            "attribute": "def",
+            "value": 20
+          },
+          {
+            "type": "x",
+            "index": "DEF",
+            "attribute": "def%",
+            "value": 5
+          }
+        ]
+      },
+      {
+        "name": "汙染過的褲子",
+        "per": 1,
+        "des": "HP上限-2% 暴擊傷害+2%",
+        "kind": "equip",
+        "slot": [
+          "護腿"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "護腿",
+        "f_def": 100,
+        "effect": [
+          {
+            "type": "x",
+            "index": "HP上限",
+            "attribute": "hp%",
+            "value": -2
+          },
+          {
+            "type": "x",
+            "index": "暴擊傷害",
+            "attribute": "crit_dmg%",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "name": "下礦防護衣",
+        "per": 1,
+        "des": "受到傷害%(減少)+1%",
+        "kind": "equip",
+        "slot": [
+          "胸甲"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "category": "胸甲",
+        "f_def": 100,
+        "effect": [
+          {
+            "type": "x",
+            "index": "受到傷害%(減少)",
+            "attribute": "damage",
+            "value": 1
+          }
+        ]
+      }
+    ],
+    "mana_reward": [
+      {
+        "name": "魔力原礦",
+        "per": 1,
+        "des": "或許有什麼用途...？",
+        "kind": "equip",
+        "slot": [
+          "首飾"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "stated": 5,
+        "element": null,
+        "category": "首飾",
+        "refine": 20,
+        "refine_pts": 0,
+        "def": 1,
+        "f_def": 1,
+        "effect": [
+          {
+            "type": "+",
+            "index": "ATK",
+            "attribute": "atk",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "name": "魔力錠",
+        "per": 1,
+        "des": "或許有什麼用途...？",
+        "kind": "equip",
+        "slot": [
+          "首飾"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "stated": 5,
+        "element": null,
+        "category": "首飾",
+        "refine": 20,
+        "refine_pts": 0,
+        "def": 1,
+        "f_def": 1,
+        "effect": [
+          {
+            "type": "+",
+            "index": "ATK",
+            "attribute": "atk",
+            "value": 1
+          },
+          {
+            "type": "+",
+            "index": "mp",
+            "attribute": "MP上限",
+            "value": 2
+          },
+          {
+            "type": "+",
+            "index": "hp",
+            "attribute": "HP上限",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "name": "高純度魔力錠",
+        "per": 1,
+        "des": "或許有什麼用途...？",
+        "kind": "equip",
+        "slot": [
+          "首飾"
+        ],
+        "xtal1": null,
+        "xtal2": null,
+        "stated": 5,
+        "element": null,
+        "category": "首飾",
+        "refine": 20,
+        "refine_pts": 0,
+        "def": 1,
+        "f_def": 1,
+        "effect": [
+          {
+            "type": "+",
+            "index": "ATK",
+            "attribute": "atk",
+            "value": 1
+          },
+          {
+            "type": "+",
+            "index": "mp",
+            "attribute": "MP上限",
+            "value": 2
+          },
+          {
+            "type": "+",
+            "index": "hp",
+            "attribute": "HP上限",
+            "value": 3
+          },
+          {
+            "type": "+",
+            "index": "DEF",
+            "attribute": "def",
+            "value": 4
+          },
+          {
+            "type": "x",
+            "index": "等效防禦",
+            "attribute": "equ_def",
+            "value": 5
+          }
+        ]
+      }
+    ]
+  },
+  "other": {
+    "pts": [ 10, 30, 50, 100, 150 ],
+    "coin": [ 10, 20, 30 ],
+    "futa_coin": [ 10, 20, 30, 40, 50, 100, 150, 200 ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "579618807237312512": [
+        {
+            "item_id": 2,
+            "item_name": "指定暱稱卡",
+            "price": 100200,
+            "quantity": 10,
+            "sold": false
+        },
+        {
+            "item_id": 3,
+            "item_name": "增加身分組卡",
+            "price": 2000,
+            "quantity": 10,
+            "sold": false
+        },
+        {
+            "item_id": 4,
+            "item_name": "指定身分組卡",
+            "price": 8787,
+            "quantity": 8,
+            "sold": false
+        },
+        {
+            "item_id": 5,
+            "item_name": "迴轉卡",
+            "price": 6969,
+            "quantity": 69,
+            "sold": false
+        },
+        {
+            "item_id": 6,
+            "item_name": "指定身分組卡",
+            "price": 200,
+            "quantity": 1,
+            "sold": false
+        },
+        {
+            "item_id": 7,
+            "item_name": "指定暱稱卡",
+            "price": 100200,
+            "quantity": 10,
+            "sold": false
+        },
+        {
+            "item_id": 9,
+            "item_name": "指定身分組卡",
+            "price": 8787,
+            "quantity": 8,
+            "sold": false
+        },
+        {
+            "item_id": 10,
+            "item_name": "迴轉卡",
+            "price": 6969,
+            "quantity": 69,
+            "sold": false
+        }
+    ]
+}
