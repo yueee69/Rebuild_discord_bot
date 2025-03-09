@@ -63,6 +63,7 @@ def main():
         for extension in initial_extensions:
             bot.load_extension(extension)
                 
+        
         load_dotenv()
         bot.run(os.environ.get("BOT_TOKEN"))
                 

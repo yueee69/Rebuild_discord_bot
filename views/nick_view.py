@@ -1,6 +1,7 @@
 import nextcord
 from nextcord import Interaction
 
+from utils.general import Toolkit
 from utils.discord_model import GenericModal
 from .BASIC_VIEW import BASIC_VIEW
 from callbacks.nick_callback import Main_handler
@@ -30,5 +31,6 @@ class Create:
         
     @staticmethod
     def result(context: object) -> BASIC_VIEW:
-        embed = nextcord.Embed(title = "成功")
+        embed = nextcord.Embed(title = "成功修改暱稱！", description = f"成功把 {context.target_user.name} 改名成 {context.nick_name}", color = Toolkit.randomcolor())
+        embed.set_thumbnail(url = "https://media.tenor.com/Ym6VeAcZoTcAAAAi/aaaah-cat.gif")
         return BASIC_VIEW.views(embed = embed)

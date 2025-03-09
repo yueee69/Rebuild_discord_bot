@@ -90,7 +90,14 @@ class Item_data:
 
 
     def to_dict(self):
-        return {"trans": 0, "nick": 0, "role": 0, "add_role": 0,"protect":False,"lottery":False}
+        return {
+        "trans": self._trans_card,
+        "nick": self._nick_card,
+        "role": self._role_card,
+        "add_role": self._add_role_card,
+        "protect": self._protect,
+        "lottery": self._lottery
+    }
 
 class ItemManager:
     def __init__(self, debug=False):

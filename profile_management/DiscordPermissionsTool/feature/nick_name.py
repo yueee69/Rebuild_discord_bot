@@ -1,3 +1,7 @@
+import nextcord
+
+from views.ERROR import Error
+
 class Nick:
     @staticmethod
     async def nick(target: object, name: str):

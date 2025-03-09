@@ -41,8 +41,12 @@ class NickTool(profile_manager):
         
         bot_self = context.interaction.guild.me
         user = context.target_user
-        if not (bot_self.guild_permissions.change_nickname or bot_self.top_role < user.top_role): #有沒有改人暱稱的權限
-            return(CheckStatus.FORBIDDEN, "我的權限不足...")
+        if not bot_self.guild_permissions.manage_nicknames:
+            return (CheckStatus.FORBIDDEN, "我的權限不足... 沒有管理暱稱的權限")
+        
+        if bot_self.top_role.position <= user.top_role.position:
+            return (CheckStatus.FORBIDDEN, "我的權限不足... 用戶的權限太高啦！")
+
         
         return (CheckStatus.OK, "")
 
