@@ -1,0 +1,4 @@
+[
+  "models/trusteeship/tests/test_diamondPlan.py::test_diamondPlan",
+  "utils/tests/test_general.py::test_open_User_Jsons"
+]
