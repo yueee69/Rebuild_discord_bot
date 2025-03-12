@@ -4,8 +4,8 @@ from utils.general import Toolkit
 from views.BASIC_VIEW import BASIC_VIEW
 
 class BaseRanking():
-    def __init__(self, interaction: Interaction, manager, display_attr: str, thumbnail: str = None, title: str = ""):
-        self.MAX_DISPLAY = 5
+    def __init__(self, interaction: Interaction, manager, display_attr: str, thumbnail: str = None, title: str = "", MAX_DISPLAY: int = 5):
+        self.MAX_DISPLAY = MAX_DISPLAY
         self.interaction = interaction
         self.manager = manager  # 傳入 Manager
         self.display_attr = display_attr
