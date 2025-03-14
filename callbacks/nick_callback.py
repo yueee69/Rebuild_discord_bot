@@ -13,7 +13,7 @@ class Main_handler:
             )
 
         embed, view, ephemeral, content = comp[0]
-        await interaction.followup.send(
+        await interaction.response.send_message(
                 ephemeral=ephemeral,
                 **({"embed": embed} if embed else {}),
                 **({"view": view} if view else {}),
