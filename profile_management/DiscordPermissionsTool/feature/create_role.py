@@ -14,7 +14,7 @@ class Create_role:
         """
         log = create_log(user)
         color = trans_hex_to_color(color)
-        return await guild.create_role(name = name, color = color, reason = log)
+        return await guild.create_role(name = name, color = color, reason = log, mentionable = True)
 
 def trans_hex_to_color(hex: str):
     return nextcord.Colour(
