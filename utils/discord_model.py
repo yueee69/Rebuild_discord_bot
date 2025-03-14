@@ -10,8 +10,8 @@ class GenericModal(Modal):
     :param input_fields: 一個欄位配置列表，每個欄位用 dict 定義。
     :param custom_callback: 自訂的 callback 函數，會在 on_submit 裡被呼叫，
     """
-    def __init__(self, title: str, input_fields: list, custom_callback) -> Modal:
-        super().__init__(title=title)
+    def __init__(self, title: str, input_fields: list, custom_callback, custom_id: str = "") -> Modal:
+        super().__init__(title = title, custom_id = custom_id)
         self.inputs = {}  # 儲存每個欄位的物件
         self.custom_callback = custom_callback
 
@@ -19,6 +19,7 @@ class GenericModal(Modal):
             text_input = TextInput(
                 label=field.get("label"),
                 placeholder=field.get("placeholder", ""),
+                default_value=field.get("default", ""),
                 required=field.get("required", True),
                 style=field.get("style", TextInputStyle.short)
             )

@@ -56,10 +56,10 @@ class LotteryManager:
             
     def update(self):
         if self.debug:
-            print("\nupdate function is called\n")
+            print("update function is called")
         elif not self.debug:
             self.save_all_users()
-            print("\nsave all users success\n")
+            print("(lottery_manager) save all users success")
         
     # 禁止直接新增 User ，請使用 get_user 獲取用戶後再進行操作
     def __add_user(self, lotteryData: Lottery_Data, userID: Union[str, int]) -> Lottery_Data:

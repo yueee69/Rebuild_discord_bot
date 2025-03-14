@@ -31,6 +31,17 @@ class Toolkit():
         color = Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         return color
     
+    @staticmethod
+    def is_custom_color(color: str) -> bool:
+        """檢查字串是否為合法的 HEX 色碼"""
+        if not color.startswith("#") or len(color) != 7:
+            return True
+        try:
+            int(color[1:], 16)  # 嘗試將 #RRGGBB 轉換為 16 進制數字
+            return False
+        except ValueError:
+            return True
+    
     @classmethod
     def open_jsons(self, *names:str) -> list[dict]:
         jsons = []

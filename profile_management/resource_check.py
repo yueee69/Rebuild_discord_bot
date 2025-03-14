@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+from utils.general import Toolkit
+
 class CheckStatus(Enum):
     OK = 0
     CARD_IS_NOT_ENOUGH = 1
     FORBIDDEN = 2 #權限不足
+    ERROR = 3 #資訊有誤
 
 class profile_manager(ABC):
     # 這裡搞抽象
@@ -53,4 +56,23 @@ class NickTool(profile_manager):
     def deduct_fortune(self, context: object):
         context.user_item.nick_card -= 1
 
+
+class Create_role_tool(profile_manager):
+    PER_DEDUCT = 1
+
+    def check_resource(self, context: object) -> dict[CheckStatus, str]:
+        if context.user_item.add_role_card < 1:
+            return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的創建身分組卡不足！")
+        
+        bot_self = context.interaction.guild.me
+        if not bot_self.guild_permissions.manage_roles:
+            return (CheckStatus.FORBIDDEN, "我的權限不足... 我沒有建立身分組的權限")
+        
+        if Toolkit.is_custom_color(context.create_role_color):
+            return (CheckStatus.ERROR, f'你輸入的 "{context.create_role_color}" 不是一個有效Hex色碼')
+   
+        return (CheckStatus.OK, "")
+
+    def deduct_fortune(self, context: object):
+        context.user_item.add_role_card -= 1
 

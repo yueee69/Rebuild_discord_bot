@@ -4,7 +4,7 @@ from nextcord import Interaction
 from utils.general import Toolkit
 from utils.discord_model import GenericModal
 from .BASIC_VIEW import BASIC_VIEW
-from callbacks.nick_callback import Main_handler
+from callbacks import nick_callback
 
 class Create:
     def __init__(self, user, service: str):
@@ -27,7 +27,7 @@ class Create:
         )
     async def on_submit(self, interaction: Interaction, response: dict):
         name = response["name"]
-        await Main_handler.nick_result(name, interaction, self.service, self.user)
+        await nick_callback.Main_handler.nick_result(name, interaction, self.service, self.user)
         
     @staticmethod
     def result(context: object) -> BASIC_VIEW:

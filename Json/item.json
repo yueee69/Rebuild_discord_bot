@@ -3,7 +3,7 @@
         "trans": 0,
         "nick": 9,
         "role": 0,
-        "add_role": 0,
+        "add_role": 2,
         "protect": false,
         "lottery": false
     }

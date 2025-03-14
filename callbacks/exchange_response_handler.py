@@ -1,4 +1,5 @@
 import nextcord
+from nextcord import Interaction
 
 from views import exchnge_fortune_views
 
@@ -8,7 +9,7 @@ class ExchangeResponseHandler:
         self.user_object = user_object
         self.fortune = fortune
 
-    async def on_check(self, interaction):
+    async def on_check(self, interaction: Interaction):
         custom = interaction.data['custom_id']
         await interaction.message.delete()
         embed, view, ephemeral, content = exchnge_fortune_views.Create.exchange_user_callback(interaction, custom, self.fortune, self.user_object)

@@ -13,5 +13,4 @@ class Main_handler:
             **({"view": view} if view else {}),
             **({"content": content} if content else {})
         )
-        return
     

@@ -14,7 +14,7 @@ class Nick:
         if view:
             return view
         
-        await DiscordTools.nick(context.target_user, context.nick_name)
+        await DiscordTools.nick(context.target_user, context.nick_name, context.interaction.user)
         NickTool().deduct_fortune(context)
         return Constructor.nick_complete(context)
         
