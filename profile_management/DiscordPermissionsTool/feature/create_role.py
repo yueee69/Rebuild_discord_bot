@@ -25,5 +25,5 @@ def create_log(user: object):
     """創造一個log，這會顯示在伺服器的審核日誌裡"""
     time = Toolkit.get_time()
     times = f"{time.year}/{time.month}/{time.day} | {time.hour}:{time.minute}:{time.second}"
-    return f"(Log) | {user.display_name} 在 {times} 創建了這個身分組"
+    return f"(log) | {user.display_name} 在 {times} 創建了這個身分組"
         

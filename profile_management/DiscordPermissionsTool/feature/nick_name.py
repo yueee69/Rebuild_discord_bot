@@ -16,4 +16,4 @@ def create_log(target: object, name: str, user: object):
     """創造一個log，這會顯示在伺服器的審核日誌裡"""
     time = Toolkit.get_time()
     times = f"{time.year}/{time.month}/{time.day} | {time.hour}:{time.minute}:{time.second}"
-    return f"(Log) | {user.display_name} 在 {times} 指定了 {target.display_name} {name}暱稱"
+    return f"(log) | {user.display_name} 在 {times} 修改了 {target.name} 變成了 {name}暱稱"
