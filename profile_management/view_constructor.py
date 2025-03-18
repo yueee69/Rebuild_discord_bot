@@ -7,23 +7,24 @@ from views import assign_role_view
 
 from views.item_crad_check_view import Create
 
-class Constructor:
+class ErrorHandler:
     @staticmethod
-    def handle_error(StatusCode: object, due: str) -> BASIC_VIEW:
+    def handle(StatusCode: object, due: str) -> BASIC_VIEW:
         if StatusCode.value != 0:
-            return Error.error(due = due)
-        
-    @staticmethod
-    def nick_complete(context: object) -> BASIC_VIEW:
-        return trans_to_list_and_add_card_check(nick_view.Create.result(context), context)
-    
-    @staticmethod
-    def create_role_complete(context: object) -> BASIC_VIEW:
-        return trans_to_list_and_add_card_check(create_role_view.Create.result(context), context)
-    
-    @staticmethod
-    def assign_role_complete(context: object) -> BASIC_VIEW:
-        return trans_to_list_and_add_card_check(assign_role_view.Create.result(context), context)
-    
-def trans_to_list_and_add_card_check(original_view: BASIC_VIEW, context: object):
-    return [original_view, Create.get_components(context.interaction, "以下是更新後的道具卡背包")]
+            return Error.error(due=due)
+        return None
+
+
+class Constructor:  
+    def __init__(self, context: object):
+        self.context = context
+        self.BAG_ITEM_VIEW = Create.get_components(context.interaction, "以下是更新後的道具卡背包")
+
+    def compelete(self) -> BASIC_VIEW:
+        maps = {
+            "nick": nick_view.Create.result,
+            "create_role": create_role_view.Create.result,
+            "assign_role": assign_role_view.Create.result
+        }
+        view = maps.get(self.context.service)(self.context)
+        return [view, self.BAG_ITEM_VIEW]
