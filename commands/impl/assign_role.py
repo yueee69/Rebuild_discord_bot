@@ -3,7 +3,7 @@ from nextcord import Interaction, SlashOption
 
 from new_bot.commands.base_command import Cog_Extension
 
-from callbacks.assogn_role_callback import Main_handler
+from new_bot.callbacks import assign_role_callback
 
 class Assign_role(Cog_Extension):
     def __init__(self, bot):
@@ -17,9 +17,15 @@ class Assign_role(Cog_Extension):
         role: nextcord.Role = SlashOption(name = "身分組", description = "選擇一個身分組！")
         ):
 
-        comp = await Main_handler.main(interaction, user, role, "assign_role")
+        data = assign_role_callback.State_manager(
+            target = user, 
+            role = role, 
+            service = "assign_role", 
+            interaction = interaction
+            )
+        
+        embed, view, ephemeral, content = await assign_role_callback.SelectHandler().get_components(data)
 
-        embed, view, ephemeral, content = comp[0]
         await interaction.response.send_message(
                 ephemeral=ephemeral,
                 **({"embed": embed} if embed else {}),
@@ -27,14 +33,6 @@ class Assign_role(Cog_Extension):
                 **({"content": content} if content else {})
             )
 
-
-        for embed, view, ephemeral, content in comp[1:]:
-            await interaction.followup.send(
-                ephemeral=ephemeral,
-                **({"embed": embed} if embed else {}),
-                **({"view": view} if view else {}),
-                **({"content": content} if content else {})
-            )
         
 def setup(bot):
     bot.add_cog(Assign_role(bot))

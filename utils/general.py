@@ -26,10 +26,18 @@ class Toolkit():
         period = "上午" if hour < 12 else "下午"
         return hour,minute,period
     
-    @classmethod
-    def randomcolor(self):
-        color = Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        return color
+    @staticmethod
+    def randomcolor():
+        while True:
+            r = random.randint(0, 150)  # 避免 R 過高
+            g = random.randint(50, 255)  # G 不能太低，避免暗紅
+            b = random.randint(50, 255)  # B 不能太低，避免暗紅
+
+            # 確保 G 和 B 至少有一個接近 R，避免「紅遠大於其他顏色」
+            if abs(r - g) > 60 and abs(r - b) > 60:
+                continue
+
+            return Color.from_rgb(r, g, b)
     
     @staticmethod
     def is_custom_color(color: str) -> bool:

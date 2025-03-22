@@ -52,11 +52,11 @@ class Main_handler:
                 **({"content": content} if content else {})
             )
 
-
-        for embed, view, ephemeral, content in comp[1:]:
-            await interaction.followup.send(
-                ephemeral=ephemeral,
-                **({"embed": embed} if embed else {}),
-                **({"view": view} if view else {}),
-                **({"content": content} if content else {})
-            )
+        if len(comp) > 0:
+            for embed, view, ephemeral, content in comp[1:]:
+                await interaction.followup.send(
+                    ephemeral=ephemeral,
+                    **({"embed": embed} if embed else {}),
+                    **({"view": view} if view else {}),
+                    **({"content": content} if content else {})
+                )

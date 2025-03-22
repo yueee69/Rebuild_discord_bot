@@ -13,10 +13,14 @@ class Assign_role:
         if view:
             return view
         
+        context.description = Assign_role_tool.generate_result_description(context)
+        
         context.created_role = await DiscordTools.assign_role(
             context.target_user,
             context.add_role,
-            context.interaction.user
-            )
+            context.interaction.user,
+            context.display_color
+            )     
+
         Assign_role_tool().deduct_fortune(context)
         return Constructor(context).compelete()

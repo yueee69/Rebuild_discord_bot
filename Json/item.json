@@ -3,7 +3,15 @@
         "trans": 0,
         "nick": 8,
         "role": 5,
-        "add_role": 2,
+        "add_role": 1,
+        "protect": false,
+        "lottery": false
+    },
+    "998882287829663794": {
+        "trans": 0,
+        "nick": 0,
+        "role": 0,
+        "add_role": 0,
         "protect": false,
         "lottery": false
     }

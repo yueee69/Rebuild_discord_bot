@@ -26,7 +26,7 @@ class Create:
         return view 
     
     @staticmethod
-    def check_user_status_components(fortune: int, user_object: object) -> tuple[Embed, View, bool]:
+    def check_user_status_components(fortune: int, user_object: object) -> BASIC_VIEW:
 
         user = user_object.user
         view = None
@@ -51,7 +51,7 @@ class Create:
         return BASIC_VIEW.views(embed = embed, view = view)
 
     @staticmethod
-    def exchange_user_callback(interaction: Interaction, buttonStatus: bool, fortune: int, user: object) -> tuple[Embed, View, bool]:
+    def exchange_user_callback(interaction: Interaction, buttonStatus: bool, fortune: int, user: object) -> BASIC_VIEW:
 
         callbacks = {
             "yes": Create.__exchange_success,
@@ -67,14 +67,14 @@ class Create:
         return Create.__exchange_success_components(interaction, fortune, user)
 
     @staticmethod
-    def __exchange_success_components(interaction: Interaction,fortune: int, user: object) -> tuple[Embed, View, bool]:
+    def __exchange_success_components(interaction: Interaction,fortune: int, user: object) -> BASIC_VIEW:
         embed = nextcord.Embed(title="你兌換成功啦！", color = nextcord.Colour.green())
         embed.add_field(name=f"{interaction.user.name}", value=f' 使用 {fortune * 3500:,} 鮭魚幣兌換了 {fortune} 陽壽',inline=True)
         embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/957718579887894558.webp")
         return BASIC_VIEW.views(embed = embed)
         
     @staticmethod
-    def __exchange_cancel(interaction: Interaction, fortune: int, user: object) -> tuple[Embed, View, bool]:
+    def __exchange_cancel(interaction: Interaction, fortune: int, user: object) -> BASIC_VIEW:
         embed = nextcord.Embed(title="兌換取消", color = Toolkit.randomcolor())
         embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/928564939063455744.gif")
         return BASIC_VIEW.views(embed = embed)

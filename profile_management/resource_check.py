@@ -84,7 +84,7 @@ class Assign_role_tool(profile_manager):
 
     def check_resource(self, context: object) -> dict[CheckStatus, str]:
         if context.user_item.role_card < 1:
-            return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的指令身分組卡不足！")
+            return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的指定身分組卡不足！")
 
         bot_self = context.interaction.guild.me
         if not bot_self.guild_permissions.manage_roles:
@@ -93,7 +93,24 @@ class Assign_role_tool(profile_manager):
         if context.add_role.name in self.DO_NOT_ROLE:
             return (CheckStatus.ERROR, f'你想壞壞喔 不可以增加 {context.add_role.name} 這個身分組')
         
+        if context.add_role in context.target_user.roles and not context.display_color:
+            return (CheckStatus.ERROR, "該用戶已經擁有這個身分組 無法再次指定！")
+        
         return (CheckStatus.OK, "")
 
     def deduct_fortune(self, context: object):
         context.user_item.role_card -= 1
+
+    @staticmethod
+    def generate_result_description(context: object) -> str:
+        """根據不同情況回應result的title"""
+        user_has_role = context.add_role in context.target_user.roles
+        display_color = context.display_color
+
+        if user_has_role and display_color:
+            return "✅ **成功更改顏色！**（無身分組增加）"
+
+        if not user_has_role and display_color:
+            return f"✅ **成功指定 {context.add_role.mention}，並更改顏色！**"
+
+        return f"✅ **成功指定 {context.add_role.mention}！**"

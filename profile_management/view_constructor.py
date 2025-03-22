@@ -11,7 +11,7 @@ class ErrorHandler:
     @staticmethod
     def handle(StatusCode: object, due: str) -> BASIC_VIEW:
         if StatusCode.value != 0:
-            return Error.error(due=due)
+            return [Error.error(due = due)]
         return None
 
 
