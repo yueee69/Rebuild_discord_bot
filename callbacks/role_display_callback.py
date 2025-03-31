@@ -19,6 +19,13 @@ class Role_tool:
     以下是我給你的一組列表 你必須對應列表回復對應的顏色，可以加一些你的創意並且不要太死板，*同樣的顏色必須名字保持一致！*
     注意！ ****回傳格式只能是中文化的列表****(順序、數量都必須保持原樣) 並且不要加其他的訊息 否則我會eval失敗！
     "⚠️ 注意：如果你的回應違反格式，我的程式將視為「錯誤回應」，並丟棄你的回答！"
+
+    ✅ 正確示範：
+    ["紅色", "藍色", "綠色"]
+    
+    ❌ 錯誤示範：
+    ["紅色（Red）", "這是藍色", "好漂亮的綠色"]
+
     """
     DO_NOT_ROLE = constants.DO_NOT_ROLE 
 
@@ -29,7 +36,7 @@ class Role_tool:
         """
         role_data = []
         eng_names = []
-        roles = Role_tool._filter_vaild_roles(guild.roles)
+        roles = Role_tool._filter_valid_roles(guild.roles)
         for role in roles:
             hex_color = Role_tool._get_role_hex_color(role)
             eng_name = Role_tool._get_eng_name(hex_color)
@@ -50,7 +57,7 @@ class Role_tool:
         return result
         
     @staticmethod
-    def _filter_vaild_roles(roles: list) -> list:
+    def _filter_valid_roles(roles: list) -> list:
         result = []
         for role in roles:
             if role.name not in Role_tool.DO_NOT_ROLE and role.name != "@everyone" and not role.is_bot_managed():
