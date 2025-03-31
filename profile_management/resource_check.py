@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 from utils.general import Toolkit
+from core import constants
 
 class CheckStatus(Enum):
     OK = 0
@@ -12,20 +13,7 @@ class CheckStatus(Enum):
 class profile_manager(ABC):
     # 這裡搞抽象
     PER_DEDUCT = 1
-    DO_NOT_ROLE = [
-        "頭等鮭魚腹",
-        "次等鮭魚腹",
-        "鮭魚幹部",
-        "食物鏈頂端",
-        "花椰菜",
-        "狗子",
-        "鮭魚卵",
-        "鮭魚們",
-        "會外鮭魚",
-        "會內鮭魚",
-        "鮭姬",
-        "鮭魚乾爹"
-        ]
+    DO_NOT_TOLE = constants.DO_NOT_ROLE
 
     @abstractmethod
     def check_resource(self, context: object):
@@ -38,7 +26,7 @@ class profile_manager(ABC):
 class NickTool(profile_manager):
     PER_DEDUCT = 1
 
-    def check_resource(self, context: object) -> dict[CheckStatus, str]:
+    def check_resource(self, context: object) -> tuple[CheckStatus, str]:
         if context.user_item.nick_card < 1:
             return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的指定暱稱卡不足！")
         
@@ -59,7 +47,7 @@ class NickTool(profile_manager):
 class Create_role_tool(profile_manager):
     PER_DEDUCT = 1
 
-    def check_resource(self, context: object) -> dict[CheckStatus, str]:
+    def check_resource(self, context: object) -> tuple[CheckStatus, str]:
         if context.user_item.add_role_card < 1:
             return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的創建身分組卡不足！")
         
@@ -82,7 +70,7 @@ class Create_role_tool(profile_manager):
 class Assign_role_tool(profile_manager):
     PER_DEDUCT = 1
 
-    def check_resource(self, context: object) -> dict[CheckStatus, str]:
+    def check_resource(self, context: object) -> tuple[CheckStatus, str]:
         if context.user_item.role_card < 1:
             return(CheckStatus.CARD_IS_NOT_ENOUGH, "你的指定身分組卡不足！")
 
@@ -101,16 +89,4 @@ class Assign_role_tool(profile_manager):
     def deduct_fortune(self, context: object):
         context.user_item.role_card -= 1
 
-    @staticmethod
-    def generate_result_description(context: object) -> str:
-        """根據不同情況回應result的title"""
-        user_has_role = context.add_role in context.target_user.roles
-        display_color = context.display_color
-
-        if user_has_role and display_color:
-            return "✅ **成功更改顏色！**（無身分組增加）"
-
-        if not user_has_role and display_color:
-            return f"✅ **成功指定 {context.add_role.mention}，並更改顏色！**"
-
-        return f"✅ **成功指定 {context.add_role.mention}！**"
+    

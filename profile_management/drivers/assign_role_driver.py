@@ -13,7 +13,7 @@ class Assign_role:
         if view:
             return view
         
-        context.description = Assign_role_tool.generate_result_description(context)
+        context.description = DiscordTools.generate_result_description(context)
         
         context.created_role = await DiscordTools.assign_role(
             context.target_user,

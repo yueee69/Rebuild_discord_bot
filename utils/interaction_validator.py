@@ -1,4 +1,3 @@
-import nextcord
 from nextcord import Interaction
 
 from views.ERROR import Error

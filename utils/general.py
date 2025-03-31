@@ -26,8 +26,8 @@ class Toolkit():
         period = "上午" if hour < 12 else "下午"
         return hour,minute,period
     
-    @staticmethod
-    def randomcolor():
+    @staticmethod 
+    def randomcolor() -> Color:
         while True:
             r = random.randint(0, 150)  # 避免 R 過高
             g = random.randint(50, 255)  # G 不能太低，避免暗紅

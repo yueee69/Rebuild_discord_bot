@@ -23,6 +23,20 @@ class Assign_role:
         new_position = user_roles[0].position + 1 if user_roles else 1
         await guild.edit_role_positions(positions={role: new_position})
 
+    @staticmethod
+    def generate_result_description(context: object) -> str:
+        """根據不同情況回應result的title"""
+        user_has_role = context.add_role in context.target_user.roles
+        display_color = context.display_color
+
+        if user_has_role and display_color:
+            return "✅ **成功更改顏色！**（無身分組增加）"
+
+        if not user_has_role and display_color:
+            return f"✅ **成功指定 {context.add_role.mention}，並更改顏色！**"
+
+        return f"✅ **成功指定 {context.add_role.mention}！**"
+
 
 def create_log(target: object, role: object, user: object):
     """創造一個log，這會顯示在伺服器的審核日誌裡"""

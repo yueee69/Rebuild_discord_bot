@@ -22,5 +22,5 @@ class RankSelectView(nextcord.ui.View):
 
 class Create:
     @staticmethod
-    def get_components():
+    def get_components(guild_id: int):
         return BASIC_VIEW.views(view = RankSelectView())
