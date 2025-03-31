@@ -20,6 +20,7 @@
 
 ```
 discord-bot
+├── Ai/                       # 專為與chatgpt交互的模塊資料夾
 ├── callbacks                 # 依指令為單位，用於驅動UI交互後的回應
 ├── views                     # 依指令為單位，用於創建該指令會用到的所有視圖組件
 ├── commands/impl             # Discord 機器人指令模組
