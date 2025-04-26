@@ -14,8 +14,8 @@ class Nick:
         if view:
             return view
         
-        await DiscordTools.nick(context.target_user, context.nick_name, context.interaction.user)
-        NickTool().deduct_fortune(context)
+        if not context.event_cancel:
+            await DiscordTools.nick(context.target_user, context.nick_name, context.interaction.user)
+
+        NickTool().deduct_card(context)
         return Constructor(context).compelete()
-        
-    

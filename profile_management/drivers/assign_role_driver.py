@@ -15,12 +15,13 @@ class Assign_role:
         
         context.description = DiscordTools.generate_result_description(context)
         
-        context.created_role = await DiscordTools.assign_role(
-            context.target_user,
-            context.add_role,
-            context.interaction.user,
-            context.display_color
-            )     
+        if not context.event_cancel:
+            context.created_role = await DiscordTools.assign_role(
+                context.target_user,
+                context.add_role,
+                context.interaction.user,
+                context.display_color
+                )     
 
-        Assign_role_tool().deduct_fortune(context)
+        Assign_role_tool().deduct_card(context)
         return Constructor(context).compelete()

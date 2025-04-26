@@ -20,7 +20,7 @@ class profile_manager(ABC):
         pass
 
     @abstractmethod
-    def deduct_fortune(self, context: object):
+    def deduct_card(self, context: object):
         pass
 
 class NickTool(profile_manager):
@@ -40,7 +40,7 @@ class NickTool(profile_manager):
 
         return (CheckStatus.OK, "")
 
-    def deduct_fortune(self, context: object):
+    def deduct_card(self, context: object):
         context.user_item.nick_card -= 1
 
 
@@ -63,7 +63,7 @@ class Create_role_tool(profile_manager):
    
         return (CheckStatus.OK, "")
 
-    def deduct_fortune(self, context: object):
+    def deduct_card(self, context: object):
         context.user_item.add_role_card -= 1
 
 
@@ -86,7 +86,7 @@ class Assign_role_tool(profile_manager):
         
         return (CheckStatus.OK, "")
 
-    def deduct_fortune(self, context: object):
+    def deduct_card(self, context: object):
         context.user_item.role_card -= 1
 
     

@@ -1,3 +1,7 @@
+import nextcord
+
+from utils.general import Toolkit
+
 from views.BASIC_VIEW import BASIC_VIEW
 from views.ERROR import Error
 
@@ -20,11 +24,28 @@ class Constructor:
         self.context = context
         self.BAG_ITEM_VIEW = Create.get_components(context.interaction, "以下是更新後的道具卡背包")
 
-    def compelete(self) -> BASIC_VIEW:
+    def event_embed(self) -> BASIC_VIEW:
+        embed = nextcord.Embed(
+            title = "額外事件觸發",
+            description = self.context.event_message,
+            color = Toolkit.randomcolor()
+            )
+        return BASIC_VIEW.views(embed = embed)
+
+    def compelete(self) -> list[BASIC_VIEW]:
         maps = {
             "nick": nick_view.Create.result,
             "create_role": create_role_view.Create.result,
             "assign_role": assign_role_view.Create.result
         }
-        view = maps.get(self.context.service)(self.context)
-        return [view, self.BAG_ITEM_VIEW]
+        result = []
+
+        if not self.context.event_cancel:
+            view = maps.get(self.context.service)(self.context)
+            result.append(view)
+
+        if self.context.event_message:
+            result.append(self.event_embed())
+
+        result.append(self.BAG_ITEM_VIEW)
+        return result

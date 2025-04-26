@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Union
 
+import random
+
 from new_bot.utils.general import Toolkit
 
 @dataclass
@@ -13,6 +15,13 @@ class Item_data:
     protect: bool = False
     lottery: bool = False
     
+    item_pools_trans = {
+            "迴轉卡": "trans_card",
+            "增加身分組卡": "add_role_card",
+            "指定身分組卡": "role_card",
+            "指定暱稱卡": "nick_card"
+        }
+
     def __init__(self, ItemJson, manager=None):
         self.manager = manager
         self._trans_card = ItemJson["trans"]
@@ -29,6 +38,8 @@ class Item_data:
     @trans_card.setter
     def trans_card(self, value: int):
         self._trans_card = value
+        if self._trans_card == 0:
+            self._protect = False
         self.manager.update()
 
     @property
@@ -77,17 +88,15 @@ class Item_data:
         self.manager.update()
 
     def dump_items(self, prize: str):
-        item_pools_trans = {
-            "迴轉卡": "trans_card",
-            "增加身分組卡": "add_role_card",
-            "指定身分組卡": "role_card",
-            "指定暱稱卡": "nick_card"
-        }
-        if prize in item_pools_trans:
-            attr_name = item_pools_trans[prize]
+        if prize in self.item_pools_trans:
+            attr_name = self.item_pools_trans[prize]
             setattr(self, attr_name, getattr(self, attr_name) + 1)
             self.manager.update()
 
+    def random_card(self) -> str:
+        """隨機抽一張卡片"""
+        card = random.choice(self.item_pools_trans.keys())
+        return self.item_pools_trans.get(card), card
 
     def to_dict(self):
         return {

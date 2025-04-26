@@ -33,6 +33,7 @@ discord-bot
 ├── profile_management/       # 需要權限級指令的存放資料夾(更改暱稱、指定身分組、創建身分組)，包括main_driver
 |   ├── drivers/              # 存放各種指令driver的資料夾，架構和pattern和Lottery差不多
 │   ├── DiscordPermissionsTool/ #存放需要權限級操作的模塊(創建身分組、加派身分組、更改別人的暱稱等)
+│   ├── events/               # 迴轉卡觸發後的event模塊
 ├── ranks/                    # 存放"排行榜"的模塊，這裡用到抽象模式，子類只需要初始化父類即可
 └── main.py                   # 專案進入點
 ```

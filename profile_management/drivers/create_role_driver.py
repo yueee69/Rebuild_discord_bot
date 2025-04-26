@@ -13,13 +13,15 @@ class Create_role:
         if view:
             return view
         
-        context.created_role = await DiscordTools.create_role(
-            context.interaction.guild, 
-            context.create_role_name, 
-            context.create_role_color, 
-            context.interaction.user
-            )
-        Create_role_tool().deduct_fortune(context)
+        if not context.event_cancel:
+            context.created_role = await DiscordTools.create_role(
+                context.interaction.guild, 
+                context.create_role_name, 
+                context.create_role_color, 
+                context.interaction.user
+                )
+            
+        Create_role_tool().deduct_card(context)
         return Constructor(context).compelete()
         
     

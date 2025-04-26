@@ -30,7 +30,7 @@ class Create:
         await nick_callback.Main_handler.nick_result(name, interaction, self.service, self.user)
         
     @staticmethod
-    def result(context: object) -> BASIC_VIEW:
+    def result(context: object) -> list[BASIC_VIEW]:
         embed = nextcord.Embed(title = "成功修改暱稱！", description = f"成功把 {context.target_user.name} 改名成 {context.nick_name}", color = Toolkit.randomcolor())
         embed.set_thumbnail(url = "https://media.tenor.com/Ym6VeAcZoTcAAAAi/aaaah-cat.gif")
         return BASIC_VIEW.views(embed = embed)
