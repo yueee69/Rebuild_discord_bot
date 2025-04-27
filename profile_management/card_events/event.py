@@ -103,8 +103,8 @@ class LookingOtherCard(BaseEvent):
 
 class EventChoice:
     EVENTS = [
-        (StealCard, 20), (ClearCard, 5), (ExtraDeduct, 15), (ExchangeCard, 10), (EventCancel, 50),
-        (LookingOtherCard, 1000)
+        (StealCard, 20), (ClearCard, 5), (ExtraDeduct, 10), (ExchangeCard, 15), (EventCancel, 35),
+        (LookingOtherCard, 15)
         ]
 
     @staticmethod
