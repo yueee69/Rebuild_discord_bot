@@ -2,7 +2,7 @@ from views.BASIC_VIEW import BASIC_VIEW
 
 from profile_management.view_constructor import Constructor, ErrorHandler
 from profile_management.resource_check import Assign_role_tool
-
+from profile_management.card_events import event_handler
 from profile_management.DiscordPermissionsTool.main_driver import DiscordTools
 
 class Assign_role:
@@ -15,6 +15,7 @@ class Assign_role:
         
         context.description = DiscordTools.generate_result_description(context)
         
+        event_handler.Handler(context).main()
         if not context.event_cancel:
             context.created_role = await DiscordTools.assign_role(
                 context.target_user,

@@ -26,7 +26,7 @@ class Constructor:
 
     def event_embed(self) -> BASIC_VIEW:
         embed = nextcord.Embed(
-            title = "額外事件觸發",
+            title = "迴轉卡事件觸發！",
             description = self.context.event_message,
             color = Toolkit.randomcolor()
             )
@@ -40,12 +40,12 @@ class Constructor:
         }
         result = []
 
+        if self.context.event_message:
+            result.append(self.event_embed())
+
         if not self.context.event_cancel:
             view = maps.get(self.context.service)(self.context)
             result.append(view)
-
-        if self.context.event_message:
-            result.append(self.event_embed())
 
         result.append(self.BAG_ITEM_VIEW)
         return result

@@ -37,6 +37,9 @@ class NickTool(profile_manager):
         
         if bot_self.top_role.position <= user.top_role.position:
             return (CheckStatus.FORBIDDEN, "我的權限不足... 用戶的權限太高啦！")
+        
+        if context.nick_name == context.target_user.display_name:
+            return (CheckStatus.ERROR, "新暱稱不能與舊暱稱相同！")
 
         return (CheckStatus.OK, "")
 

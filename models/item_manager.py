@@ -95,7 +95,7 @@ class Item_data:
 
     def random_card(self) -> str:
         """隨機抽一張卡片"""
-        card = random.choice(self.item_pools_trans.keys())
+        card = random.choice(list(self.item_pools_trans.keys()))
         return self.item_pools_trans.get(card), card
 
     def to_dict(self):
@@ -110,7 +110,7 @@ class Item_data:
 
 class ItemManager:
     def __init__(self, debug=False):
-        self.ItemDatas = {} # {userID: Lottery_Data}
+        self.ItemDatas = {} # {userID: itemData}
         self.debug = debug
         if self.debug:
             print("\nUserManager in debug mode")
@@ -152,5 +152,3 @@ class ItemManager:
     def save_all_users(self):
         json_data = {userID: value.to_dict() for userID, value in self.ItemDatas.items()}
         Toolkit.dump_jsons(("item.json", json_data))
-
-   

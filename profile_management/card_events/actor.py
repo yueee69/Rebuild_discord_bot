@@ -4,7 +4,7 @@ from models.item_manager import Item_data
 @dataclass
 class Actor:
     item: Item_data
-    display_name: str
+    user: object
 
 @dataclass
 class ActorPair:

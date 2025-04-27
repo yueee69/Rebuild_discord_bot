@@ -2,7 +2,7 @@ from views.BASIC_VIEW import BASIC_VIEW
 
 from profile_management.view_constructor import Constructor, ErrorHandler
 from profile_management.resource_check import NickTool
-
+from profile_management.card_events import event_handler
 from profile_management.DiscordPermissionsTool.main_driver import DiscordTools
 
 class Nick:
@@ -14,6 +14,7 @@ class Nick:
         if view:
             return view
         
+        event_handler.Handler(context).main()
         if not context.event_cancel:
             await DiscordTools.nick(context.target_user, context.nick_name, context.interaction.user)
 

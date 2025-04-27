@@ -4,8 +4,6 @@ from .drivers.nick_driver import Nick
 from .drivers.create_role_driver import Create_role
 from .drivers.assign_role_driver import Assign_role
 
-from events import event_handler
-
 from dataclasses import dataclass
 
 from models.item_manager import Item_data, ItemManager
@@ -39,11 +37,12 @@ class Driver:
             nick_name: str = None, create_role_name: str = None, create_role_color: str = None,
             add_role: str = None, display_color: bool = False):
               
+        item_manager = ItemManager()
         context = Context(
             interaction = interaction,
             service = service,
-            user_item = ItemManager().get_user(interaction.user.id),
-            target_item = ItemManager().get_user(target_user.id),
+            user_item = item_manager.get_user(interaction.user.id),
+            target_item = item_manager.get_user(target_user.id),
             target_user = target_user,
             nick_name = nick_name,
             create_role_name = create_role_name,
@@ -54,7 +53,5 @@ class Driver:
             description = "",
             event_message = "",
             event_cancel = False
-        )
-
-        event_handler.Handler(context).main()
+        )  
         return await self.maps.get(service)(context)
