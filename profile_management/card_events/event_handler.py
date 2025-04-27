@@ -12,10 +12,17 @@ class Handler:
         self.pair = ActorPair(user_actor, target_actor)
         self.context = context
 
-    def random_active(self) -> bool:
+    def __random_active(self) -> bool:
         return random.randint(1, 100) <= self.ACTIVE_RATE
+    
+    def __condition_detect(self) -> bool:
+        return (
+            self.__random_active() #是否觸發
+            and self.context.target_item.protect #是否開啟迴轉
+            and (self.context.user.id != self.context.target_user.id) #target是否是自己
+        )
 
     def main(self) -> None:
-        if self.random_active() and self.context.target_item.protect:
+        if self.__condition_detect():
             self.context.target_item.trans_card -= 1
             event.EventChoice.main(self.context, self.pair)
