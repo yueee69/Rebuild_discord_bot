@@ -1,14 +1,14 @@
 {
     "579618807237312512": {
         "trans": 119,
-        "nick": 100,
+        "nick": 90,
         "role": 0,
         "add_role": 1,
         "protect": true,
         "lottery": false
     },
     "998882287829663794": {
-        "trans": 9993,
+        "trans": 9983,
         "nick": 0,
         "role": 0,
         "add_role": 0,
@@ -16,6 +16,14 @@
         "lottery": false
     },
     "1182989365404770365": {
+        "trans": 0,
+        "nick": 0,
+        "role": 0,
+        "add_role": 0,
+        "protect": false,
+        "lottery": false
+    },
+    "968026956367015976": {
         "trans": 0,
         "nick": 0,
         "role": 0,

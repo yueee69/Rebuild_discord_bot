@@ -4,7 +4,7 @@ from .actor import Actor, ActorPair
 from profile_management.card_events import event
 
 class Handler:
-    ACTIVE_RATE = 100
+    ACTIVE_RATE = 70
 
     def __init__(self, context: object):
         user_actor = Actor(context.user_item, context.interaction.user)
@@ -19,7 +19,7 @@ class Handler:
         return (
             self.__random_active() #是否觸發
             and self.context.target_item.protect #是否開啟迴轉
-            and (self.context.user.id != self.context.target_user.id) #target是否是自己
+            and (self.context.interaction.user.id != self.context.target_user.id) #target是否是自己
         )
 
     def main(self) -> None:

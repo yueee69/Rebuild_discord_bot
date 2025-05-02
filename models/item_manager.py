@@ -94,7 +94,7 @@ class Item_data:
             self.manager.update()
 
     def random_card(self) -> str:
-        """隨機抽一張卡片"""
+        """隨機抽一張卡片，返回一個名稱"""
         card = random.choice(list(self.item_pools_trans.keys()))
         return self.item_pools_trans.get(card), card
 

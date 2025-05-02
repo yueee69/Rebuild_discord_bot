@@ -17,9 +17,17 @@ class BackpackEmbedBuilder:
     def __init__(self):
         self.item_manager = ItemManager()
 
-    def build_embed(self, user: nextcord.Member, custom_title) -> nextcord.Embed:
+    def build_embed(self, user: nextcord.Member, custom_title: str, info_index: list[int]) -> nextcord.Embed:
         item = self.item_manager.get_user(user.id)
         protect_status = get_protect_status_string(item.protect)
+
+        CARD_INFO = [
+            ("迴轉卡", item.trans_card),
+            ("指定暱稱卡", item.nick_card),
+            ("創建身分組卡", item.add_role_card),
+            ("指定身分組卡", item.role_card),
+            ("迴轉卡保護狀態", protect_status)
+        ]
 
         embed = nextcord.Embed(
             title=custom_title,
@@ -27,16 +35,31 @@ class BackpackEmbedBuilder:
             color=Toolkit.randomcolor()
         )
         embed.set_thumbnail(url=user.display_avatar.url)
-        embed.add_field(name="迴轉卡", value=item.trans_card, inline=False)
-        embed.add_field(name="指定暱稱卡", value=item.nick_card, inline=False)
-        embed.add_field(name="創建身分組卡", value=item.add_role_card, inline=False)
-        embed.add_field(name="指定身分組卡", value=item.role_card, inline=False)
-        embed.add_field(name="迴轉卡保護狀態", value=protect_status, inline=False)
+
+        for idx in sorted(info_index):
+            name, value = CARD_INFO[idx]
+            embed.add_field(name = name, value = value, inline = False)
+
         return embed
 
 
 class Create:
     @staticmethod
-    def get_components(interaction: Interaction, custom_title: str = "道具卡背包") -> BASIC_VIEW:
-        embed = BackpackEmbedBuilder().build_embed(interaction.user, custom_title)
+    def get_components(
+        interaction: Interaction,
+        custom_title: str = "道具卡背包", 
+        info_index: list[int] = [0, 1 ,2 ,3, 4]
+        ) -> BASIC_VIEW:
+        """
+        params:
+            interacton: discord_interaction
+            custom_title: 要指定的embed title
+            info_index: 傳入對應卡片的index，用於只回覆某些卡片資訊 (0~4)
+                迴轉卡: 0
+                指定暱稱卡: 1
+                創建身分組卡: 2
+                指定身分組卡: 3
+                迴轉卡保護狀態: 4
+        """
+        embed = BackpackEmbedBuilder().build_embed(interaction.user, custom_title, info_index)
         return BASIC_VIEW.views(embed = embed, ephemeral = True)
