@@ -4,10 +4,10 @@ from nextcord import Interaction
 from .BASIC_VIEW import BASIC_VIEW
 from utils.general import Toolkit
 from models.item_manager import ItemManager
-
+from callbacks import change_card_protect_status
 
 def get_protect_status_string(status: bool) -> str:
-    return "開啟" if status else "關閉"
+    return "🛡️ 開啟" if status else "關閉"
 
 class BackpackEmbedBuilder:
     """
@@ -42,6 +42,39 @@ class BackpackEmbedBuilder:
 
         return embed
 
+class ButtonBuilder:
+    @staticmethod
+    def build_button(name: str, style: nextcord.ButtonStyle, change_status: bool):
+        button = nextcord.ui.Button(
+            label = name,
+            style = style,
+            custom_id = str(change_status)
+        )
+
+        button.callback = change_card_protect_status.MainHandler().on_click
+        return button
+
+class ProtectButton:
+    BUTTON_SETTING = [
+        ("✅ 開啟保護", nextcord.ButtonStyle.green),
+        ("❌ 關閉保護", nextcord.ButtonStyle.primary)
+    ]
+
+    def __init__(self):
+        self.item_manager = ItemManager()
+    
+    def get_view(self, user_id: int | str):
+        user_card_status = self.item_manager.get_user(user_id)
+        index = int(user_card_status.protect)
+        text, style = self.BUTTON_SETTING[index]
+
+        button = ButtonBuilder.build_button(text, style, self.__get_reverse_status(user_card_status.protect))
+        view = nextcord.ui.View()
+        view.add_item(button)
+        return view
+
+    def __get_reverse_status(self, status: bool):
+        return not status
 
 class Create:
     @staticmethod
@@ -62,4 +95,5 @@ class Create:
                 迴轉卡保護狀態: 4
         """
         embed = BackpackEmbedBuilder().build_embed(interaction.user, custom_title, info_index)
-        return BASIC_VIEW.views(embed = embed, ephemeral = True)
+        view = ProtectButton().get_view(interaction.user.id)
+        return BASIC_VIEW.views(embed = embed, view = view, ephemeral = True)
