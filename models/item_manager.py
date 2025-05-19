@@ -8,22 +8,19 @@ from new_bot.utils.general import Toolkit
 @dataclass
 class Item_data:
     manager = None
+    tool = None
+
     trans_card: int = 0
     nick_card: int = 0
     role_card: int = 0
     add_role_card: int = 0
     protect: bool = False
     lottery: bool = False
-    
-    item_pools_trans = {
-            "迴轉卡": "trans_card",
-            "增加身分組卡": "add_role_card",
-            "指定身分組卡": "role_card",
-            "指定暱稱卡": "nick_card"
-        }
 
-    def __init__(self, ItemJson, manager=None):
+    def __init__(self, ItemJson, manager = None):
         self.manager = manager
+        self.tool = ItemTools(self)
+
         self._trans_card = ItemJson["trans"]
         self._nick_card = ItemJson["nick"]
         self._role_card = ItemJson["role"]
@@ -37,7 +34,8 @@ class Item_data:
 
     @trans_card.setter
     def trans_card(self, value: int):
-        self._trans_card = value
+        self._trans_card = max(value, 0)
+        
         if self._trans_card == 0:
             self._protect = False
         self.manager.update()
@@ -48,7 +46,7 @@ class Item_data:
 
     @nick_card.setter
     def nick_card(self, value: int):
-        self._nick_card = value
+        self._nick_card = max(value, 0)
         self.manager.update()
 
     @property
@@ -57,7 +55,7 @@ class Item_data:
 
     @role_card.setter
     def role_card(self, value: int):
-        self._role_card = value
+        self._role_card = max(value, 0)
         self.manager.update()
 
     @property
@@ -66,7 +64,7 @@ class Item_data:
 
     @add_role_card.setter
     def add_role_card(self, value: int):
-        self._add_role_card = value
+        self._add_role_card = max(value, 0)
         self.manager.update()
 
     @property
@@ -86,17 +84,6 @@ class Item_data:
     def lottery(self, value: bool):
         self._lottery = value
         self.manager.update()
-
-    def dump_items(self, prize: str):
-        if prize in self.item_pools_trans:
-            attr_name = self.item_pools_trans[prize]
-            setattr(self, attr_name, getattr(self, attr_name) + 1)
-            self.manager.update()
-
-    def random_card(self) -> str:
-        """隨機抽一張卡片，返回一個名稱"""
-        card = random.choice(list(self.item_pools_trans.keys()))
-        return self.item_pools_trans.get(card), card
 
     def to_dict(self):
         return {
@@ -121,7 +108,7 @@ class ItemManager:
         data = Toolkit.open_jsons("item.json")
         for user_id, user_info in data.items():
             #print(f"Loading user {user_id}: {user_info}") 
-            user = Item_data(user_info, manager=self)
+            user = Item_data(user_info, manager = self)
             self.__add_user(user, user_id)
             
     def update(self):
@@ -152,3 +139,26 @@ class ItemManager:
     def save_all_users(self):
         json_data = {userID: value.to_dict() for userID, value in self.ItemDatas.items()}
         Toolkit.dump_jsons(("item.json", json_data))
+
+
+class ItemTools:
+    ITEM_POOLS_TRANS = {
+            "迴轉卡": "trans_card",
+            "增加身分組卡": "add_role_card",
+            "指定身分組卡": "role_card",
+            "指定暱稱卡": "nick_card"
+        }
+    
+    def __init__(self, item: Item_data):
+        self.item = item
+
+    def dump_items(self, prize: str):
+        if prize in self.ITEM_POOLS_TRANS:
+            attr_name = self.ITEM_POOLS_TRANS[prize]
+            setattr(self.item, attr_name, getattr(self.item, attr_name) + 1)
+            self.item.manager.update()
+
+    def random_card(self) -> str:
+        """隨機抽一張卡片，返回一個名稱"""
+        card = random.choice(list(self.ITEM_POOLS_TRANS.keys()))
+        return self.ITEM_POOLS_TRANS.get(card), card

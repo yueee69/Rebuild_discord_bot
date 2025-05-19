@@ -1,15 +1,15 @@
 {
     "579618807237312512": {
         "trans": 119,
-        "nick": 90,
+        "nick": -1,
         "role": 0,
         "add_role": 1,
         "protect": true,
         "lottery": false
     },
     "998882287829663794": {
-        "trans": 9983,
-        "nick": 0,
+        "trans": 5635,
+        "nick": 89,
         "role": 0,
         "add_role": 0,
         "protect": true,

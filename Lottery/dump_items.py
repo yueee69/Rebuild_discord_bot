@@ -32,7 +32,7 @@ class Item_pool(Dump_items):
                 userData.coin += coin
 
             elif item in list(item_pools_trans):
-                itemData.dump_items(item)
+                itemData.tool.dump_items(item)
 
 class Xtal_pool(Dump_items):
     def dump_items(self, prizes: list, userData: object):

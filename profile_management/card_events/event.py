@@ -22,7 +22,7 @@ class StealCard(BaseEvent):
         actor = random.choice([actor_pair.actor1, actor_pair.actor2])
         other = actor_pair.get_other(actor)
 
-        eng_card, chinese_card = actor.item.random_card() #隨機一張卡
+        eng_card, chinese_card = actor.item.tool.random_card() #隨機一張卡
         count = random.randint(1, 5) #隨機偷1~5張卡
         deduct = min(getattr(actor.item, eng_card), count) #實際可以扣除的數量 有可能玩家卡不足
 
@@ -40,7 +40,7 @@ class ClearCard(BaseEvent):
 
     def apply(self, context: object, actor_pair: ActorPair):
         actor = random.choice([actor_pair.actor1, actor_pair.actor2])
-        eng_card, chinese_card = actor.item.random_card() #隨機一張卡
+        eng_card, chinese_card = actor.item.tool.random_card() #隨機一張卡
 
         clear_count = getattr(actor.item, eng_card)
         setattr(actor.item, eng_card, 0) #直接設為0
@@ -55,7 +55,7 @@ class ExtraDeduct(BaseEvent):
 
     def apply(self, context: object, actor_pair: ActorPair):
         actor = random.choice([actor_pair.actor1, actor_pair.actor2])
-        eng_card, chinese_card = actor.item.random_card() #隨機一張卡
+        eng_card, chinese_card = actor.item.tool.random_card() #隨機一張卡
 
         percent = random.uniform(0.05, 0.5) #5%~50%的幅度
         deduct_count = int(getattr(actor.item, eng_card) * percent)
@@ -75,14 +75,14 @@ class ExchangeCard(BaseEvent):
         actor = random.choice([actor_pair.actor1, actor_pair.actor2])
         other = actor_pair.get_other(actor)
 
-        eng_card, chinese_card = actor.item.random_card() #隨機一張卡
+        eng_card, chinese_card = actor.item.tool.random_card() #隨機一張卡
         tmp = getattr(actor.item, eng_card)
         setattr(actor.item, eng_card, getattr(other.item, eng_card))
         setattr(other.item, eng_card, tmp)
 
         context.event_message += (
             f"\n【{actor.user.mention}】與【{other.user.mention}】被命運之環所困，\n"
-            f"交換了未知的能量碎片：{chinese_card}。"
+            f"交換了未知的能量碎片：__**{chinese_card}**__\n"
         )
         if random.randint(1, 100) <= self.EXTRA_EVENT_PERCENT:
             doing = ["在發呆", "爛網", "手滑"]
@@ -95,6 +95,7 @@ class EventCancel(BaseEvent):
     def apply(self, context: object, actor_pair: ActorPair):
         context.event_cancel = True
         context.event_message += f"\n 空間逆轉 —— 事件被{self.name}所抹消，命運暫停！"
+
 
 class LookingOtherCard(BaseEvent):
     name = "《窥視者の眼》"
