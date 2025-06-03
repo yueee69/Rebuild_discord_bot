@@ -9,3 +9,8 @@ class Calculater:
         user_data.coin -= fortune * 3500
         user_data.fortune += fortune
         user_object.save_all_users()
+
+    @staticmethod
+    def daily_shop_buy(user_object: object, coin: int):
+        user_data = user_object.user
+        user_data.coin -= coin

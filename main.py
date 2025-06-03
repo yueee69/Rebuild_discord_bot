@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from nextcord.ext import commands
-from new_bot.core import constants
 
 Debug = True
 intents = nextcord.Intents.all()

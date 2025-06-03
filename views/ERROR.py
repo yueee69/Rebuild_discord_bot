@@ -1,4 +1,5 @@
 import nextcord
+from nextcord.ui import View
 
 from .BASIC_VIEW import BASIC_VIEW
 
@@ -7,9 +8,15 @@ class Error:
     def error(
         title = "噢噢...發生了一點小問題~",
         due: str = "Unknown Error :(", 
-        thumbnail: str = "https://cdn.discordapp.com/emojis/695989213799252018.webp"
+        thumbnail: str = "https://cdn.discordapp.com/emojis/695989213799252018.webp",
+        color: nextcord.Colour = nextcord.Colour.red(),
+        view: View = None
     ) -> BASIC_VIEW:
         
-        embed = nextcord.Embed(title = title,description=f"• {due}", color=nextcord.Colour.red())
+        embed = nextcord.Embed(title = title,description=f"• {due}", color = color)
         embed.set_thumbnail(url = thumbnail)
-        return BASIC_VIEW.views(embed = embed, ephemeral = True)
+        return BASIC_VIEW.views(
+            embed = embed,
+            view = view or View(),
+            ephemeral = True
+            )

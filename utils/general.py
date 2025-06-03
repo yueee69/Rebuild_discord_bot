@@ -13,6 +13,11 @@ class Toolkit():
         self.debug = debug
 
     @classmethod
+    def get_greeting(self) -> str:
+        hour, *_ = self.get_period_time()
+        return "早安" if 4 < hour < 12 else "午安" if 13 < hour < 18 else "晚安"
+
+    @classmethod
     def get_time(self) -> timedelta:
         tzinfo=timezone(timedelta(hours=constants.TIME_ZONE))
         return datetime.now(tzinfo)
@@ -22,7 +27,7 @@ class Toolkit():
         tzinfo=timezone(timedelta(hours=constants.TIME_ZONE))
         taipei_time = datetime.now(tzinfo)
         hour = taipei_time.hour
-        minute = "0" + str(taipei_time.minute) if len(str(taipei_time.minute)) == 1 else taipei_time.minute
+        minute = str(taipei_time.minute).zfill(2)
         period = "上午" if hour < 12 else "下午"
         return hour,minute,period
     

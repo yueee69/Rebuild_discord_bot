@@ -17,7 +17,7 @@ class Air_Data:
         return self._times
     
     @times.setter
-    def lottery_accumulation(self, value):
+    def times(self, value):
         self._times = value
         self.manager.update()
         
