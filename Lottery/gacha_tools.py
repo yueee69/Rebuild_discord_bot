@@ -45,21 +45,20 @@ class Norm_pool(Lottery):
             }
         }
 
-    def draw(self, lottery_json: object, times: int = 10) -> list:
+    def draw(self, lottery_data: object, times: int = 10) -> list:
         """
         Params:
-            lottery_json: 用戶的 json 資料, 用於判斷大、小保底
+            lottery_data: 用戶的 json 資料, 用於判斷大、小保底
             times: 抽取次數 預設10
         """
         prizes = []
     
         for _ in range(times):
-            lottery_json.lottery_accumulation += 1
-            lottery_json.lottery_total += 1
-
             weights = self.percent.copy()
+            lottery_data.current_lottery_times += 1
+            lottery_data.total_lottery_times += 1
 
-            if lottery_json.lottery_accumulation == 101:
+            if lottery_data.current_lottery_times == 101:
                 weights = {
                     "一般": 0,
                     "普通": 0,
@@ -69,13 +68,17 @@ class Norm_pool(Lottery):
             pool = random.choices(["普通", "一般", "大獎"], weights=list(weights.values()))[0]
 
             if pool == "大獎":
-                lottery_json.lottery_accumulation = 0
+                lottery_data.current_lottery_times = 0
 
             prize = random.choices(
                 list(self.prize_pools[pool].keys()), 
                 weights=list(self.prize_pools[pool].values())
             )[0]
             prizes.append(prize)
+
+            if prize == "空氣":
+                lottery_data.air_times += 1
+
 
         return prizes
 

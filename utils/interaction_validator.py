@@ -17,7 +17,7 @@ class InteractionValidator:
             new_interaction: 用戶後續和view交互的interaction
         """
 
-        if new_interaction.user.id == old_interaction.user.id or new_interaction in InteractionValidator.ADMIN_ID:
+        if new_interaction.user.id == old_interaction.user.id or new_interaction.user.id in InteractionValidator.ADMIN_ID:
             return True  # 使用者是發起人，或是管理員，可以通過驗證
 
         await InteractionValidator.send_error_response(new_interaction)            

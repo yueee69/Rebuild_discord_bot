@@ -9,13 +9,18 @@ class BASIC_VIEW:
         embed: Embed = None,
         view: View = None,
         ephemeral: bool = False,
+        file: object = None,
         content: str = None,
-        clear_view: bool = False
+        clear_view: bool = False,
+        with_timestamp: bool = True
     ) -> tuple[Embed, View, bool ,str]:
         if clear_view:
             view = View()
 
-        if embed:
+        if embed and with_timestamp:
             hour, minute, period = Toolkit.get_period_time()
-            embed.set_footer(text=f'{period} {hour}:{minute} (GMT+8)') #加上時間戳
+            embed.set_footer(text=f'{period} {hour}:{minute}') #加上時間戳
+
+        if file:
+            return (embed, view, ephemeral, content, file)
         return (embed, view, ephemeral, content)

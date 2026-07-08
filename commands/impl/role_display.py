@@ -3,13 +3,14 @@ from nextcord import Interaction
 
 from new_bot.commands.base_command import Cog_Extension
 
+from core import constants
 from callbacks.role_display_callback import Main_hindler
 
 class Role_display(Cog_Extension):
     def __init__(self, bot):
         super().__init__(bot)
         
-    @nextcord.slash_command(name="列出可被指定的身分組", description="展示可被操作的身分組")
+    @nextcord.slash_command(name="列出可被指定的身分組", description="展示可被操作的身分組", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     async def role_display(self, interaction: Interaction):
         await interaction.response.defer(with_message = True)
 

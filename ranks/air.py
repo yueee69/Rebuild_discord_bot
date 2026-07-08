@@ -1,4 +1,4 @@
-from models.air_manager import AirManager
+from managers.air_manager import AirManager
 from .base import BaseRanking
 
 class Air_rank(BaseRanking):
@@ -6,7 +6,7 @@ class Air_rank(BaseRanking):
         super().__init__(
             interaction = interaction, 
             manager = AirManager(), 
-            display_attr = "gain", 
+            display_attr = "times",
             thumbnail = "https://cdn.discordapp.com/emojis/1341750547283185765.webp", 
             title = "空氣數量"
             )

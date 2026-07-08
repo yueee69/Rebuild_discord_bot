@@ -6,8 +6,10 @@ from dataclasses import dataclass
 from callbacks import daily_shop_callback
 from views import daily_shop_views, BASIC_VIEW
 from utils.interaction_validator import InteractionValidator
-from models.daily_shop_manager import DailyShopManager, DailyShopData
-from models.user_manager import UserManager, User
+from managers.daily_shop_manager import DailyShopManager, DailyShopData
+from managers.user_manager import User, UserManager
+
+from utils import global_views
 from features.item_dumper import ItemRewardAllocator
 from utils import Buytools
 
@@ -17,7 +19,11 @@ class Page:
         """
         第一次打開指令時機器人回復的主頁面
         """
-        comp = Tool.get_main_page(interaction)
+        user, state = UserManager().get_user(interaction.user.id)
+        comp = global_views.UserCallback.get_Components(
+            state,
+            Tool.get_main_page(interaction)
+        )
         await daily_shop_callback.Message.send(interaction, comp) 
 
     @staticmethod
@@ -61,7 +67,13 @@ class Page:
             """
             這裡再做一次判斷是為了用戶卡embed
             """
+            shop_manager = DailyShopManager()
             item: DailyShopData = Tool.get_item(context.index)
+            if shop_manager.user_has_purchased_today(interaction.user.id):
+                comp = daily_shop_views.ConfirmYes(context).error_page("你今天已經購買過每日商店商品了，請明天再來。")
+                await daily_shop_callback.Message.edit(interaction, comp)
+                return
+
             if item.left_count <= 0: #沒了
                 comp = daily_shop_views.ConfirmYes(context).error_page("此商品已賣完。")
                 await daily_shop_callback.Message.edit(interaction, comp)
@@ -70,6 +82,20 @@ class Page:
             coin = Tool.get_user(context.interaction.user.id).coin
             if coin < item.price: #用戶的錢不夠
                 comp = daily_shop_views.ConfirmYes(context).error_page(f"你的鮭魚幣不足，還缺 __**{item.price - coin}**__ 鮭魚幣")
+                await daily_shop_callback.Message.edit(interaction, comp)
+                return
+
+            reserve_status = shop_manager.reserve_daily_purchase(interaction.user.id, context.index)
+            if reserve_status == "already_purchased":
+                comp = daily_shop_views.ConfirmYes(context).error_page("你今天已經購買過每日商店商品了，請明天再來。")
+                await daily_shop_callback.Message.edit(interaction, comp)
+                return
+            if reserve_status == "sold_out":
+                comp = daily_shop_views.ConfirmYes(context).error_page("此商品已賣完。")
+                await daily_shop_callback.Message.edit(interaction, comp)
+                return
+            if reserve_status != "ok":
+                comp = daily_shop_views.ConfirmYes(context).error_page("找不到這項商品，請重新開啟每日商店。")
                 await daily_shop_callback.Message.edit(interaction, comp)
                 return
 

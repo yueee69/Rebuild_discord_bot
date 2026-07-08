@@ -6,7 +6,7 @@ from .drivers.assign_role_driver import Assign_role
 
 from dataclasses import dataclass
 
-from models.item_manager import Item_data, ItemManager
+from managers.item_manager import Item_data, ItemManager
 
 @dataclass
 class Context:

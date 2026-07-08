@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+venv/
+*.json
+*.db
+*.db-wal
+*.db-shm
+*.patch
+.codegraph/

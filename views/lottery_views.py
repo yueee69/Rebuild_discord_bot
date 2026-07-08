@@ -12,8 +12,11 @@ from typing import Union
 class get_components:
     @staticmethod
     async def lottery_views(choices: str, interaction: Interaction, user: object) -> Union[Modal, tuple[Embed, View, bool], BASIC_VIEW]:
+        if user is None:
+            return
+
         if choices == 'item_pool':
-            await Item_pool_components().make_view(interaction, user)
+            return await Item_pool_components().make_view(interaction, user)
             
         views = {
             "norm_pool": Norm_pool_components(user),
@@ -111,7 +114,7 @@ class Item_pool_components:
         pass
 
     async def make_view(self, interaction: Interaction, user: object) -> BASIC_VIEW:
-        await lottery_handler.Main_handler().result(interaction, "item_pool", user, 1)
+        return lottery_handler.Driver().get("item_pool", user, 1)
 
     @staticmethod
     def result(prizes: list) -> BASIC_VIEW:

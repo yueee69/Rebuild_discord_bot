@@ -5,7 +5,7 @@ from .BASIC_VIEW import BASIC_VIEW
 from .PAGE_EMBED_CREATER import get_paginated_embed 
 
 from utils.general import Toolkit
-from models.lottery_manager import LotteryManager
+from managers.lottery_manager import LotteryStateManager
 
 class Create:
     @staticmethod
@@ -27,9 +27,9 @@ class Create:
 
     @staticmethod
     def File_list(historyData: object, interaction: Interaction) -> BASIC_VIEW:
-        LotteryInfo = LotteryManager().get_user(interaction.user.id)
+        LotteryInfo = LotteryStateManager().get(interaction.user.id)
         title = f'以下是 {interaction.user.display_name} 的抽獎歷史紀錄'
-        description = f'墊抽數 : **__{LotteryInfo.lottery_accumulation}__** \n總抽數 : **__{LotteryInfo.lottery_total}__**'
+        description = f'墊抽數 : **__{LotteryInfo.current_lottery_times}__** \n總抽數 : **__{LotteryInfo.total_lottery_times}__**'
         img = "https://cdn.discordapp.com/emojis/1053886138990997664.webp"
 
         return get_paginated_embed(historyData.get_items(), title, description, img)

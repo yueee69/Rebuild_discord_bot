@@ -28,7 +28,11 @@ class Create:
     @staticmethod
     def check_user_status_components(fortune: int, user_object: object) -> BASIC_VIEW:
 
-        user = user_object.user
+        try:
+            user = user_object.user
+        except AttributeError:
+            return
+
         view = None
 
         if user.coin < fortune * 3500:

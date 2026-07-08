@@ -7,7 +7,7 @@ class Constructor:
     @staticmethod
     def handle_error(StatusCode: object, due: str):
         if StatusCode.value != 0:
-            return Error.error(due)
+            return Error.error(due = due)
         
     @staticmethod
     def compelete(prizes: list) -> BASIC_VIEW:

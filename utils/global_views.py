@@ -24,12 +24,13 @@ class UserCallback:
                 - Embed: 錯誤訊息的 Embed 物件
                 - View: 按鈕或互動視圖（目前為 None，但可以擴充）
                 - bool: 訊息別人是否可見
+                - content: 傳送的文字內容
         """
-        embed = Embed(title="捕捉到了一個小錯誤~", colour=nextcord.Colour.red())
-        embed.add_field(name="• 您尚未登記", value="請使用 /用戶資訊 註冊資料！", inline=False)
-        embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/695989213799252018.webp")
+        embed = Embed(title="差一步就完成了！", colour=nextcord.Colour.orange())
+        embed.add_field(name="• 需要先註冊資料", value="請先使用 </用戶資訊:1461304749931630776> 完成設定後再試一次", inline=False)
+        #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/695989213799252018.webp")
 
-        return embed, None, True
+        return embed, None, True, ""
     
 class RpgCallback:
     pass

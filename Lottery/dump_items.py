@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from models.item_manager import ItemManager
+from managers.item_manager import ItemManager
 
 class Dump_items(ABC):
     @abstractmethod

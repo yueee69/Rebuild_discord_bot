@@ -57,7 +57,7 @@ class SelectHandler:
         if not await InteractionValidator.check_authorization(data.interaction, interaction):
             return
 
-        data.display_color = bool(eval(interaction.data["values"][0])) #將str轉成bool
+        data.display_color = _parse_bool(interaction.data["values"][0])
         data.interaction = interaction
 
         await Main_handler.main(data)
@@ -66,4 +66,7 @@ class SelectHandler:
     def __random_display_color() -> str:
         """隨機產生是否顯示顏色"""
         return random.choice(["2", "-1"])
-    
+
+
+def _parse_bool(value: str) -> bool:
+    return value in {"True", "true", "1", "yes", "2"}

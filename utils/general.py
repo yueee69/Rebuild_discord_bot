@@ -14,7 +14,7 @@ class Toolkit():
 
     @classmethod
     def get_greeting(self) -> str:
-        hour, *_ = self.get_period_time()
+        hour = self.get_period_time(only_hour = True)
         return "早安" if 4 < hour < 12 else "午安" if 13 < hour < 18 else "晚安"
 
     @classmethod
@@ -23,12 +23,26 @@ class Toolkit():
         return datetime.now(tzinfo)
 
     @classmethod
-    def get_period_time(self):
+    def get_period_time(self, only_hour: bool = False) -> Union[tuple[int, int, str], int]:
         tzinfo=timezone(timedelta(hours=constants.TIME_ZONE))
         taipei_time = datetime.now(tzinfo)
-        hour = taipei_time.hour
-        minute = str(taipei_time.minute).zfill(2)
-        period = "上午" if hour < 12 else "下午"
+
+        def trans_string(s: str) -> str:
+            NORMAL = "0123456789"
+            BOLD = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
+
+            TABLE = s.maketrans(NORMAL, BOLD)
+            return s.translate(TABLE)
+
+        int_hour = taipei_time.hour
+        if only_hour:
+            return int_hour
+
+        hour = trans_string(str(int_hour))
+        minute = trans_string(str(taipei_time.minute).zfill(2))
+
+        period = "𝐀𝐌" if int_hour < 12 else "𝐏𝐌"
+
         return hour,minute,period
     
     @staticmethod 

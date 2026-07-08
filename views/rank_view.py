@@ -7,7 +7,7 @@ from callbacks.rank_callback import RankSelectHandler
 class RankSelect(nextcord.ui.Select):
     def __init__(self):
         options = [
-            nextcord.SelectOption(label="金幣排行榜", value="coin"),
+            nextcord.SelectOption(label="鮭魚幣排行榜", value="coin"),
             nextcord.SelectOption(label="空氣排行榜", value="air"),
         ]
         super().__init__(placeholder="點我選擇排行種類！", options=options)
@@ -22,5 +22,5 @@ class RankSelectView(nextcord.ui.View):
 
 class Create:
     @staticmethod
-    def get_components(guild_id: int):
+    def get_components():
         return BASIC_VIEW.views(view = RankSelectView())

@@ -1,14 +1,22 @@
 [
     {
         "user_id": "579618807237312512",
-        "coin": 1111111110975330,
-        "fortune": 11506,
+        "coin": 1111111111024580,
+        "fortune": 11429,
         "voice": 0,
         "stream": 0,
-        "gain": 490750,
-        "lvl": 327,
-        "chat": 0,
-        "buy": 0,
-        "trusteeship": {}
+        "gain": 540000,
+        "lvl": 360,
+        "chat": 0
+    },
+    {
+        "user_id": "998882287829663794",
+        "coin": 0,
+        "fortune": 0,
+        "voice": 0,
+        "stream": 0,
+        "gain": 0,
+        "lvl": 0,
+        "chat": 0
     }
 ]

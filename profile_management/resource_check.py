@@ -13,7 +13,7 @@ class CheckStatus(Enum):
 class profile_manager(ABC):
     # 這裡搞抽象
     PER_DEDUCT = 1
-    DO_NOT_TOLE = constants.DO_NOT_ROLE
+    DO_NOT_ROLE = constants.DO_NOT_ROLE
 
     @abstractmethod
     def check_resource(self, context: object):
@@ -92,4 +92,3 @@ class Assign_role_tool(profile_manager):
     def deduct_card(self, context: object):
         context.user_item.role_card -= 1
 
-    

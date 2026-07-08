@@ -3,7 +3,7 @@
 """
 import nextcord
 from nextcord import Interaction
-from models.user_manager import User, UserManager
+from managers.user_manager import User, UserManager
 
 class ItemRewardAllocator:
     """

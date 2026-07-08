@@ -3,7 +3,7 @@ from nextcord import Interaction
 
 from .BASIC_VIEW import BASIC_VIEW
 from utils.general import Toolkit
-from models.item_manager import ItemManager
+from managers.item_manager import ItemManager
 from callbacks import change_card_protect_status
 
 def get_protect_status_string(status: bool) -> str:

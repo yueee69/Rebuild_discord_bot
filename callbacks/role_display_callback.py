@@ -1,3 +1,5 @@
+import ast
+
 import webcolors
 from Ai import chatgpt
 
@@ -45,6 +47,8 @@ class Role_tool:
             eng_names.append(eng_name)
 
         chinese_names = Role_tool._get_chinese_name(eng_names)
+        if len(chinese_names) != len(role_data):
+            chinese_names = eng_names
 
         result = []
         for i, (role, hex_color, eng_name) in enumerate(role_data):
@@ -90,4 +94,12 @@ class Role_tool:
             question = str(hex_eng_name),
             temp = 0.0
         )
-        return eval(response)
+        try:
+            names = ast.literal_eval(response)
+        except (SyntaxError, ValueError):
+            return hex_eng_name
+
+        if not isinstance(names, list):
+            return hex_eng_name
+
+        return [str(name) for name in names]

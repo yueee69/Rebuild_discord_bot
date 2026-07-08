@@ -1,4 +1,4 @@
-from models.user_manager import UserManager
+from managers.user_manager import UserManager
 from .base import BaseRanking
 
 class Coin_rank(BaseRanking):

@@ -6,7 +6,7 @@ from utils.general import Toolkit
 from .BASIC_VIEW import BASIC_VIEW
 from .ERROR import Error
 from command_factory import daily_shop_factory
-from models.daily_shop_manager import DailyShopData
+from managers.daily_shop_manager import DailyShopData
 
 class MainPage:
     def __init__(self, goods: list[DailyShopData], interaction: Interaction):

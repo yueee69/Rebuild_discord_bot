@@ -7,6 +7,7 @@ class CheckStatus(Enum):
     TIMES_TOO_LOW = 2
     TIMES_TOO_HIGH = 3
     TIMES_IS_VAILD = 4
+    ALREADY_LOTTED = 5
 
 class LotteryPool(ABC):
     # 這裡搞抽象
@@ -49,9 +50,13 @@ class NormPool(LotteryPool):
 class ItemPool(LotteryPool):
     PRICE_PER_LOTTERY = 5
 
-    def check_resource(self, userData: object, times: int) -> tuple[CheckStatus, str]:
+    def check_resource(self, userData: object, times: int, userLotteryData) -> tuple[CheckStatus, str]:
         if userData.fortune < times * self.PRICE_PER_LOTTERY:
             return (CheckStatus.FORTUNE_NOT_ENOUGH, f"你的陽壽不夠，還缺 **{times * self.PRICE_PER_LOTTERY - userData.fortune}** 陽壽")
+
+        if userLotteryData.item_pool_is_lottery:
+            return (CheckStatus.ALREADY_LOTTED, f"你今天已經抽獎過了，請明天再來")
+
         return (CheckStatus.OK, "")
 
     def deduct_fortune(self, userData: object, times: int):

@@ -3,7 +3,7 @@ from Lottery import gacha_resource
 from Lottery import gacha_tools
 from Lottery import view_constructor
 
-from models.lottery_manager import LotteryManager
+from managers.lottery_manager import LotteryStateManager
 
 class Driver:
     """
@@ -18,7 +18,8 @@ class Driver:
         if view:
             return view
 
-        userLotteryData = LotteryManager().get_user(userData.user_id)
+        userLotteryData = LotteryStateManager().get(userData.user_id)
+
         prize = gacha_tools.Norm_pool().draw(userLotteryData, times)
         dump_items.Norm_pool().dump_items(prize, userData)
         pool.deduct_fortune(userData, times)
@@ -27,12 +28,15 @@ class Driver:
     
     @staticmethod
     def item_pool(userData: object, times: int):
-        pool = gacha_resource.ItemPool() 
-        status, message = pool.check_resource(userData, times)
+        pool = gacha_resource.ItemPool()
+        userLotteryData = LotteryStateManager().get(userData.user_id)
+        status, message = pool.check_resource(userData, times, userLotteryData)
 
         view = view_constructor.Constructor.handle_error(status, message)
         if view:
             return view
+
+        userLotteryData.item_pool_is_lottery += 1
 
         prize = gacha_tools.Item_pool().draw(10)
         dump_items.Item_pool().dump_items(prize, userData)

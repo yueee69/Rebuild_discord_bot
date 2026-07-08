@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from models.item_manager import Item_data
+from managers.item_manager import Item_data
 
 @dataclass
 class Actor:

@@ -1,5 +1,5 @@
 from new_bot.models.trusteeship.basePlan import DailyTrusteeshipPlan
-from new_bot.models.user_manager import User
+from new_bot.managers.user_manager import User
 from new_bot.models.trusteeship.enums.feature_type import FeatureType
 
 class PlanExecutor:
@@ -15,5 +15,3 @@ class PlanExecutor:
                     features.value.execute()
                 case FeatureType.AUTO_SIGN_IN:
                     features.value.execute()
-                
-        

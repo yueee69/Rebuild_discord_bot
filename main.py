@@ -2,7 +2,9 @@ import os
 import sys
 import traceback
 import nextcord
+import atexit
 
+from managers.lifecycle import close_all
 from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -12,12 +14,24 @@ from nextcord.ext import commands
 Debug = True
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix='!',intents=intents)
+commands_path = ["commands/impl", "events"]
+initial_extensions = []
+
+def resolve_extension_name(cog_name):
+    if "." in cog_name:
+        return cog_name
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    for path in commands_path:
+        full_path = os.path.join(base_dir, os.path.normpath(path), f"{cog_name}.py")
+        if os.path.exists(full_path):
+            return f"{path.replace('/', '.')}.{cog_name}"
+    return cog_name
 
 # 這裡建個指令讓你可以載入Cog
 @bot.command()
 async def load(ctx, cog_name):
     try:
-        bot.load_extension(f'cogs.{cog_name}')
+        bot.load_extension(resolve_extension_name(cog_name))
     except:
         await ctx.send('Failed.')
         return
@@ -27,7 +41,7 @@ async def load(ctx, cog_name):
 @bot.command()
 async def unload(ctx, cog_name):
     try:
-        bot.unload_extension(f'cogs.{cog_name}')
+        bot.unload_extension(resolve_extension_name(cog_name))
     except:
         await ctx.send('Failed.')
         return
@@ -37,20 +51,19 @@ async def unload(ctx, cog_name):
 @bot.command()
 async def reload(ctx, cog_name):
     try:
-        bot.reload_extension(f'cogs.{cog_name}')
+        bot.reload_extension(resolve_extension_name(cog_name))
     except:
         await ctx.send('Failed.')
         return
     await ctx.send('reload success!')
     
 # 載入Cog
-commands_path = ["commands/impl", "events"]
-initial_extensions = []
 def load_cogs(base_dir):
+    initial_extensions.clear()
     for path in commands_path:
         full_path = os.path.join(base_dir, os.path.normpath(path))
         for filename in os.listdir(full_path):
-            if filename.endswith('.py'):
+            if filename.endswith('.py') and not filename.startswith("_"):
                 extension = f"{path.replace('/', '.')}.{filename[:-3]}"
                 initial_extensions.append(extension)
     
@@ -62,7 +75,7 @@ def main():
         for extension in initial_extensions:
             bot.load_extension(extension)
                 
-        
+        atexit.register(close_all)
         load_dotenv()
         bot.run(os.environ.get("BOT_TOKEN"))
                 

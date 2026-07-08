@@ -15,6 +15,9 @@ DO_NOT_ROLE = [
     "鮭魚乾爹"
     ]
 
+ENABLE_COMMAND_USE_GUILDS = [
+    972795227779772418
+]
 
 # ======== strings =========
 STR_MUSIC_HELP = \

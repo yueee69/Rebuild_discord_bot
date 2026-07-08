@@ -1,6 +1,6 @@
 from nextcord import Interaction
 
-from models.item_manager import ItemManager
+from managers.item_manager import ItemManager
 
 class MainHandler:
     def __init__(self):
@@ -11,7 +11,7 @@ class MainHandler:
         
         status = interaction.data['custom_id']
         user_item = self.item_manager.get_user(interaction.user.id)
-        user_item.protect = eval(status)
+        user_item.protect = status in {"True", "true", "1", "yes"}
 
         embed, view, ephemeral, content = item_crad_check_view.Create.get_components(interaction)
 
