@@ -1,10 +1,15 @@
-# Description: 處理訊息事件
+from .coin_activity import MessageCoinActivity
+
+
 class MessageEvent():
     def __init__(self):
-        pass
+        self.coin_activity = MessageCoinActivity()
         
     async def on_message(self, message):
-        await message.channel.send(f"你說了: {message.content}")
-    
-    
-    
+        await self.coin_activity.on_message(message)
+
+    async def on_message_delete(self, message):
+        await self.coin_activity.on_message_delete(message)
+
+    async def on_message_edit(self, before, after):
+        await self.coin_activity.on_message_edit(before, after)

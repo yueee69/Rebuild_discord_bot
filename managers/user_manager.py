@@ -1,7 +1,9 @@
 import time
 from dataclasses import dataclass
+from datetime import datetime, timezone, timedelta
 from typing import Optional, Tuple, Union
 
+from core import constants
 from .sqlite_utils import SingletonSQLiteManager
 
 @dataclass
@@ -12,6 +14,9 @@ class User:
     _fortune: int = 0
     _total_gain: int = 0
     _level: int = 0
+    _chat_today: int = 0
+    _voice_today: int = 0
+    _stream_today: int = 0
     updated_at: int = 0
 
     manager: object = None
@@ -33,7 +38,10 @@ class User:
             _fortune=row[2],
             _total_gain=row[3],
             _level=row[4],
-            updated_at=row[5],
+            _chat_today=row[5],
+            _voice_today=row[6],
+            _stream_today=row[7],
+            updated_at=row[8],
             manager=manager
         )
 
@@ -57,9 +65,49 @@ class User:
         if value > self._coin:
             gained = value - self._coin
             self._total_gain += gained
-            self._level = self._total_gain // 1500
+            self._level = self._total_gain // constants.USER_LEVEL_COIN_UNIT
 
         self._coin = value
+        self._mark_dirty()
+
+    def add_coin(self, amount: int):
+        amount = int(amount)
+        if amount == 0:
+            return
+
+        self._coin += amount
+        self._total_gain += amount
+        self._level = int(self._total_gain / constants.USER_LEVEL_COIN_UNIT)
+        self._mark_dirty()
+
+    def add_chat_coin(self, amount: int):
+        amount = int(amount)
+        if amount == 0:
+            return
+
+        self._chat_today += amount
+        self.add_coin(amount)
+
+    def add_voice_coin(self, amount: int):
+        amount = int(amount)
+        if amount <= 0:
+            return
+
+        self._voice_today += amount
+        self.add_coin(amount)
+
+    def add_stream_coin(self, amount: int):
+        amount = int(amount)
+        if amount <= 0:
+            return
+
+        self._stream_today += amount
+        self.add_coin(amount)
+
+    def reset_daily_activity(self):
+        self._chat_today = 0
+        self._voice_today = 0
+        self._stream_today = 0
         self._mark_dirty()
 
     @property
@@ -81,6 +129,18 @@ class User:
     @property
     def level(self) -> int:
         return self._level
+
+    @property
+    def chat(self) -> int:
+        return self._chat_today
+
+    @property
+    def voice(self) -> int:
+        return self._voice_today
+
+    @property
+    def stream(self) -> int:
+        return self._stream_today
     
 class UserManager(SingletonSQLiteManager):
     DB_NAME = "user.db"
@@ -103,10 +163,28 @@ class UserManager(SingletonSQLiteManager):
             fortune INTEGER NOT NULL DEFAULT 0,
             total_gain INTEGER NOT NULL DEFAULT 0,
             level INTEGER NOT NULL DEFAULT 0,
+            chat_today INTEGER NOT NULL DEFAULT 0,
+            voice_today INTEGER NOT NULL DEFAULT 0,
+            stream_today INTEGER NOT NULL DEFAULT 0,
             updated_at INTEGER NOT NULL
         )
         """)
+        self._ensure_column("account_state", "chat_today", "INTEGER NOT NULL DEFAULT 0")
+        self._ensure_column("account_state", "voice_today", "INTEGER NOT NULL DEFAULT 0")
+        self._ensure_column("account_state", "stream_today", "INTEGER NOT NULL DEFAULT 0")
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS account_meta (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+        """)
         self.conn.commit()
+
+    def _ensure_column(self, table_name: str, column_name: str, definition: str):
+        self.cursor.execute(f"PRAGMA table_info({table_name})")
+        columns = {row[1] for row in self.cursor.fetchall()}
+        if column_name not in columns:
+            self.cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {definition}")
 
     def exists(self, user_id: Union[str, int]) -> bool:
         uid = str(user_id)
@@ -121,7 +199,8 @@ class UserManager(SingletonSQLiteManager):
 
         with self._lock:
             self.cursor.execute("""
-                SELECT user_id, coin, fortune, total_gain, level, updated_at
+                SELECT user_id, coin, fortune, total_gain, level,
+                       chat_today, voice_today, stream_today, updated_at
                 FROM account_state
                 WHERE user_id = ?
             """, (uid,))
@@ -146,14 +225,20 @@ class UserManager(SingletonSQLiteManager):
     def insert(self, state: User):
         with self._lock:
             self.cursor.execute("""
-            INSERT OR REPLACE INTO account_state (user_id, coin, fortune, total_gain, level, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO account_state (
+                user_id, coin, fortune, total_gain, level,
+                chat_today, voice_today, stream_today, updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 state.user_id,
                 state.coin,
                 state.fortune,
                 state.gain,
                 state.level,
+                state.chat,
+                state.voice,
+                state.stream,
                 state.updated_at
             ))
             self.conn.commit()
@@ -175,6 +260,9 @@ class UserManager(SingletonSQLiteManager):
                     fortune = ?,
                     total_gain = ?,
                     level = ?,
+                    chat_today = ?,
+                    voice_today = ?,
+                    stream_today = ?,
                     updated_at = ?
                 WHERE user_id = ?
                 """, (
@@ -182,6 +270,9 @@ class UserManager(SingletonSQLiteManager):
                     state.fortune,
                     state.gain,
                     state.level,
+                    state.chat,
+                    state.voice,
+                    state.stream,
                     state.updated_at,
                     state.user_id
                 ))
@@ -199,12 +290,72 @@ class UserManager(SingletonSQLiteManager):
     def load_all_users(self):
         with self._lock:
             self.cursor.execute("""
-                SELECT user_id, coin, fortune, total_gain, level, updated_at
+                SELECT user_id, coin, fortune, total_gain, level,
+                       chat_today, voice_today, stream_today, updated_at
                 FROM account_state
             """)
             for row in self.cursor.fetchall():
                 state = User.from_row(row, manager=self)
                 self._states[state.user_id] = state
+
+    def add_chat_coin(self, user_id: Union[str, int], amount: int) -> bool:
+        user = self.get(user_id, create_if_missing=False)
+        if not user:
+            return False
+        user.add_chat_coin(amount)
+        return True
+
+    def add_voice_coin(self, user_id: Union[str, int], amount: int) -> bool:
+        user = self.get(user_id, create_if_missing=False)
+        if not user:
+            return False
+        user.add_voice_coin(amount)
+        return True
+
+    def add_stream_coin(self, user_id: Union[str, int], amount: int) -> bool:
+        user = self.get(user_id, create_if_missing=False)
+        if not user:
+            return False
+        user.add_stream_coin(amount)
+        return True
+
+    def reset_daily_activity_if_needed(self) -> bool:
+        today = self.today_key()
+        with self._lock:
+            self.cursor.execute("SELECT value FROM account_meta WHERE key = ?", ("daily_activity_date",))
+            row = self.cursor.fetchone()
+            if row and row[0] == today:
+                return False
+
+            self.load_all_users()
+            for state in self._states.values():
+                state.reset_daily_activity()
+
+            self.cursor.execute(
+                "INSERT OR REPLACE INTO account_meta (key, value) VALUES (?, ?)",
+                ("daily_activity_date", today)
+            )
+            self.conn.commit()
+            return True
+
+    @staticmethod
+    def today_key() -> str:
+        tz = timezone(timedelta(hours=constants.TIME_ZONE))
+        return datetime.now(tz).date().isoformat()
+
+    def get_meta(self, key: str) -> Optional[str]:
+        with self._lock:
+            self.cursor.execute("SELECT value FROM account_meta WHERE key = ?", (key,))
+            row = self.cursor.fetchone()
+            return row[0] if row else None
+
+    def set_meta(self, key: str, value: str):
+        with self._lock:
+            self.cursor.execute(
+                "INSERT OR REPLACE INTO account_meta (key, value) VALUES (?, ?)",
+                (key, value)
+            )
+            self.conn.commit()
 
     @property
     def UserDatas(self):

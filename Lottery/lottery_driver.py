@@ -3,6 +3,7 @@ from Lottery import gacha_resource
 from Lottery import gacha_tools
 from Lottery import view_constructor
 
+from core import constants
 from managers.lottery_manager import LotteryStateManager
 
 class Driver:
@@ -38,7 +39,7 @@ class Driver:
 
         userLotteryData.item_pool_is_lottery += 1
 
-        prize = gacha_tools.Item_pool().draw(10)
+        prize = gacha_tools.Item_pool().draw(constants.ITEM_LOTTERY_DRAW_COUNT)
         dump_items.Item_pool().dump_items(prize, userData)
         pool.deduct_fortune(userData, 1)
 

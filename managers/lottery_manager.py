@@ -195,6 +195,33 @@ class LotteryStateManager(SingletonSQLiteManager):
 
             self.conn.commit()
 
+    def load_all_states(self):
+        with self._lock:
+            self.cursor.execute("""
+                SELECT user_id,
+                       current_lottery_times,
+                       total_lottery_times,
+                       item_pool_is_lottery,
+                       air_times,
+                       updated_at
+                FROM lottery_state
+            """)
+            for row in self.cursor.fetchall():
+                state = LotteryState.from_row(row, manager=self)
+                self._states[state.user_id] = state
+
+    def reset_daily_item_pool_flags(self):
+        with self._lock:
+            self.load_all_states()
+            for state in self._states.values():
+                state._item_pool_is_lottery = False
+
+            self.cursor.execute(
+                "UPDATE lottery_state SET item_pool_is_lottery = 0, updated_at = ?",
+                (int(time.time()),)
+            )
+            self.conn.commit()
+
     def close(self):
         with self._lock:
             if self._closed:

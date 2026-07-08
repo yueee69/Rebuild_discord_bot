@@ -3,13 +3,12 @@ import sqlite3
 import time
 from dataclasses import dataclass
 
+from core import constants
 from .sqlite_utils import SingletonSQLiteManager
-
-DISABLED_VISIBLE_ITEM_KEYWORDS = ("RPG金幣", "RPG 金幣")
 
 
 def is_visible_shop_item(item_name: str) -> bool:
-    return not any(keyword in item_name for keyword in DISABLED_VISIBLE_ITEM_KEYWORDS)
+    return not any(keyword in item_name for keyword in constants.DAILY_SHOP_DISABLED_VISIBLE_ITEM_KEYWORDS)
 
 class DailyShopData:
     def __init__(self, goods: dict, manager=None, row_id: int = None):
@@ -122,7 +121,7 @@ class DailyShopManager(SingletonSQLiteManager):
 
     @staticmethod
     def today_key() -> str:
-        return time.strftime("%Y-%m-%d", time.localtime())
+        return constants_today_key()
 
     def user_has_purchased_today(self, user_id: str | int) -> bool:
         with self._lock:
@@ -220,7 +219,10 @@ class DailyShopItem:
         return {
             "item": self.name,
             "price": self.discounted_price,
-            "left_count": random.randint(1, 7)
+            "left_count": random.randint(
+                constants.DAILY_SHOP_LEFT_COUNT_MIN,
+                constants.DAILY_SHOP_LEFT_COUNT_MAX
+            )
         }
 
     @property
@@ -234,17 +236,16 @@ class DailyShopModel:
 
     def _load_default_items(self):
         return [
-            DailyShopItem("3陽壽", 10500, 35, 42),
-            DailyShopItem("5陽壽", 17500, 35, 18),
-            DailyShopItem("7陽壽", 24500, 40, 12),
-            DailyShopItem("10陽壽", 35000, 50, 5),
-            DailyShopItem("5萬眾神幣", 5000, 5, 10),
-            DailyShopItem("10萬眾神幣", 10000, 10, 5),
-            DailyShopItem("50萬眾神幣", 45000, 100, 5),
-            DailyShopItem("100萬眾神幣", 60000, 100, 1),
-            DailyShopItem("舞者之書", 80000, 50, 1),
-            DailyShopItem("魔法戰士之書", 70000, 50, 1),
+            DailyShopItem(*item)
+            for item in constants.DAILY_SHOP_DEFAULT_ITEMS
         ]
 
-    def random_goods(self, count: int = 3) -> list[DailyShopItem]:
+    def random_goods(self, count: int = constants.DAILY_SHOP_RANDOM_GOODS_COUNT) -> list[DailyShopItem]:
         return random.choices(self.shop_pool, weights = [item.weight for item in self.shop_pool], k = count)
+
+
+def constants_today_key() -> str:
+    from datetime import datetime, timezone, timedelta
+
+    tz = timezone(timedelta(hours=constants.TIME_ZONE))
+    return datetime.now(tz).date().isoformat()

@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ui import Button, View
 from nextcord import Embed, Interaction
 
+from core import constants
 from utils.general import Toolkit
 from utils.Buytools import Calculater
 from new_bot.callbacks import exchange_response_handler
@@ -35,9 +36,11 @@ class Create:
 
         view = None
 
-        if user.coin < fortune * 3500:
+        price = fortune * constants.FORTUNE_COIN_PRICE
+
+        if user.coin < price:
             embed = nextcord.Embed(title="捕捉到了一個小錯誤~")
-            embed.add_field(name=f'• 鮭魚幣不足(缺少{ fortune * 3500 - user.coin }鮭魚幣)', value='',inline=False)
+            embed.add_field(name=f'• 鮭魚幣不足(缺少{ price - user.coin }鮭魚幣)', value='',inline=False)
             embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/695989213799252018.webp")
             embed.color = nextcord.Colour.red()
         
@@ -49,7 +52,7 @@ class Create:
 
         else:
             view = Create.yes_or_no_button(user_object, fortune)
-            embed = nextcord.Embed(title="付款確認", description=f"是否要消耗 {fortune*3500:,} 鮭魚幣兌換 {fortune} 陽壽?")
+            embed = nextcord.Embed(title="付款確認", description=f"是否要消耗 {price:,} 鮭魚幣兌換 {fortune} 陽壽?")
             embed.color = nextcord.Colour.dark_blue()
             
         return BASIC_VIEW.views(embed = embed, view = view)
@@ -73,7 +76,7 @@ class Create:
     @staticmethod
     def __exchange_success_components(interaction: Interaction,fortune: int, user: object) -> BASIC_VIEW:
         embed = nextcord.Embed(title="你兌換成功啦！", color = nextcord.Colour.green())
-        embed.add_field(name=f"{interaction.user.name}", value=f' 使用 {fortune * 3500:,} 鮭魚幣兌換了 {fortune} 陽壽',inline=True)
+        embed.add_field(name=f"{interaction.user.name}", value=f' 使用 {fortune * constants.FORTUNE_COIN_PRICE:,} 鮭魚幣兌換了 {fortune} 陽壽',inline=True)
         embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/957718579887894558.webp")
         return BASIC_VIEW.views(embed = embed)
         

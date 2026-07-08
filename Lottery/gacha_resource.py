@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+from core import constants
+
 class CheckStatus(Enum):
     OK = 0
     FORTUNE_NOT_ENOUGH = 1
@@ -25,9 +27,9 @@ class LotteryPool(ABC):
 
 
 class NormPool(LotteryPool):
-    PRICE_PER_LOTTERY = 1
-    MIN_LOTTERY = 1
-    MAX_LOTTERY = 25
+    PRICE_PER_LOTTERY = constants.NORM_LOTTERY_PRICE_PER_DRAW
+    MIN_LOTTERY = constants.NORM_LOTTERY_MIN_DRAWS
+    MAX_LOTTERY = constants.NORM_LOTTERY_MAX_DRAWS
 
     def check_resource(self, userData: object, times: int) -> tuple[CheckStatus, str, int]:
         try:
@@ -48,7 +50,7 @@ class NormPool(LotteryPool):
         userData.fortune -= times * self.PRICE_PER_LOTTERY
 
 class ItemPool(LotteryPool):
-    PRICE_PER_LOTTERY = 5
+    PRICE_PER_LOTTERY = constants.ITEM_LOTTERY_PRICE_PER_DRAW
 
     def check_resource(self, userData: object, times: int, userLotteryData) -> tuple[CheckStatus, str]:
         if userData.fortune < times * self.PRICE_PER_LOTTERY:
@@ -64,9 +66,9 @@ class ItemPool(LotteryPool):
 
 
 class XtalPool(LotteryPool):
-    PRICE_PER_LOTTERY = 5
-    MIN_LOTTERY = 1
-    MAX_LOTTERY = 25
+    PRICE_PER_LOTTERY = constants.XTAL_LOTTERY_PRICE_PER_DRAW
+    MIN_LOTTERY = constants.XTAL_LOTTERY_MIN_DRAWS
+    MAX_LOTTERY = constants.XTAL_LOTTERY_MAX_DRAWS
 
     def check_resource(self, userData: object, times: int) -> tuple[CheckStatus, str]:
         if times < self.MIN_LOTTERY:

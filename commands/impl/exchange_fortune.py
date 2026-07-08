@@ -11,7 +11,11 @@ class Exchange_fortune(Cog_Extension):
     def __init__(self, bot):
         super().__init__(bot)
 
-    @nextcord.slash_command(name='兌換陽壽', description='3500鮭魚幣=1陽壽', guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(
+        name='兌換陽壽',
+        description=f'{constants.FORTUNE_COIN_PRICE}鮭魚幣=1陽壽',
+        guild_ids=constants.ENABLE_COMMAND_USE_GUILDS
+    )
     async def exchange_fortune(
         self,
         interaction: Interaction, 

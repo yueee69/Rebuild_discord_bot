@@ -185,6 +185,18 @@ class ItemManager(SingletonSQLiteManager):
             ))
         self.conn.commit()
 
+    def reset_daily_lottery_flags(self):
+        with self._lock:
+            self.load_all_users()
+            for item in self.ItemDatas.values():
+                item._lottery = False
+
+            self.cursor.execute(
+                "UPDATE item_state SET lottery = 0, updated_at = ?",
+                (int(time.time()),)
+            )
+            self.conn.commit()
+
 
 class ItemTools:
     ITEM_POOLS_TRANS = {
