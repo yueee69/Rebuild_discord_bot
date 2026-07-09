@@ -30,7 +30,7 @@ class GuildMusicState:
     current: Optional[QueuedTrack] = None
     history: list[QueuedTrack] = field(default_factory=list)
     repeat_mode: RepeatMode = RepeatMode.NORMAL
-    volume: int = 100
+    volume: int = 50
     panel_message: Optional[nextcord.Message] = None
 
 
@@ -189,7 +189,7 @@ class MusicService:
     async def start_track(self, guild: nextcord.Guild, player: mafic.Player, queued: QueuedTrack):
         state = self.get_state(guild.id)
         state.current = queued
-        await player.play(queued.track, volume=state.volume)
+        await player.play(queued.track, volume=self.lavalink_volume(state.volume))
 
     async def play_next(self, guild: nextcord.Guild, player: mafic.Player):
         state = self.get_state(guild.id)
@@ -232,6 +232,10 @@ class MusicService:
         if 0 <= index < len(state.queue):
             return state.queue.pop(index)
         return None
+
+    @staticmethod
+    def lavalink_volume(user_volume: int) -> int:
+        return int(user_volume / 4)
 
     @staticmethod
     def pop_next_track(state: GuildMusicState) -> QueuedTrack:

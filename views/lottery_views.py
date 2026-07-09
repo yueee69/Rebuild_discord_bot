@@ -19,8 +19,7 @@ class get_components:
             return await Item_pool_components().make_view(interaction, user)
             
         views = {
-            "norm_pool": Norm_pool_components(user),
-            "xtal_pool": Xtal_pool_components().make_view(interaction, user),
+            "norm_pool": Norm_pool_components(user)
         }
 
         view_creator = views.get(choices, lambda: BASIC_VIEW.views())

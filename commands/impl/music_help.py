@@ -13,8 +13,7 @@ class Music_help(Cog_Extension):
 
     @nextcord.slash_command(
         name="音樂指令幫助",
-        description="顯示音樂機器人的快速上手與控制方式",
-        guild_ids=constants.ENABLE_COMMAND_USE_GUILDS,
+        description="顯示音樂機器人的快速上手與控制方式"
     )
     @application_checks.guild_only()
     async def music_help(self, interaction: Interaction):

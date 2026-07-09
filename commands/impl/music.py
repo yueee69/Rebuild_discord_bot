@@ -20,7 +20,7 @@ class Music(Cog_Extension):
         super().__init__(bot)
         self.service = MusicService(bot)
 
-    @nextcord.slash_command(name="加入語音", description="讓機器人加入你目前所在的語音房", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(name="加入語音", description="讓機器人加入你目前所在的語音房")
     @application_checks.guild_only()
     async def join_voice(self, interaction: Interaction):
         await interaction.response.defer(ephemeral=True)
@@ -32,7 +32,7 @@ class Music(Cog_Extension):
             **component_kwargs(message_components(f"✅ 成功加入 `{player.channel.name}` 語音房！"))
         )
 
-    @nextcord.slash_command(name="播放", description="透過連結播放或加入佇列", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(name="播放", description="透過連結播放或加入佇列")
     @application_checks.guild_only()
     async def play(
         self,
@@ -85,7 +85,7 @@ class Music(Cog_Extension):
             **component_kwargs(message_components("✅ 已建立音樂控制面板。"))
         )
 
-    @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板")
     @application_checks.guild_only()
     async def music_panel(self, interaction: Interaction):
         if not await self.service.ensure_same_voice(interaction):
@@ -101,7 +101,7 @@ class Music(Cog_Extension):
         )
         await interaction.response.send_message(**component_kwargs(message_components("✅ 已重新建立音樂控制面板。")))
 
-    @nextcord.slash_command(name="音量", description="調整音樂音量", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(name="音量", description="調整音樂音量")
     @application_checks.guild_only()
     async def volume(
         self,
@@ -113,7 +113,7 @@ class Music(Cog_Extension):
 
         await self.set_volume(interaction, value)
 
-    @nextcord.slash_command(name="離開語音", description="停止播放並離開語音房", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
+    @nextcord.slash_command(name="離開語音", description="停止播放並離開語音房")
     @application_checks.guild_only()
     async def leave_voice(self, interaction: Interaction):
         if not await self.service.ensure_same_voice(interaction):
@@ -262,7 +262,7 @@ class Music(Cog_Extension):
 
         state = self.service.get_state(interaction.guild.id)
         state.volume = value
-        await player.update(volume=value, replace=True)
+        await player.update(volume=MusicService.lavalink_volume(value), replace=True)
 
         content = f"✅ 成功修改音量！\n{interaction.user.display_name} 把音量修改到了 **{value if value != 0 else '靜音'}**"
         if edit_panel and not interaction.response.is_done():
