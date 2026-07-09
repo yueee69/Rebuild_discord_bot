@@ -5,6 +5,7 @@ from utils.general import Toolkit
 
 from views import create_role_view
 from profile_management import main_driver
+from callbacks.profile_response import send_profile_components
 
 class SelectHandler:
     def __init__(self, service: str):
@@ -31,8 +32,6 @@ class SelectHandler:
 
 class Main_handler:
     async def create_role_result(interaction: Interaction, response: dict):
-        await interaction.message.delete()
-
         color = response.get("color", None)
         if not color:
             color = interaction.data["custom_id"].split("/")[1]
@@ -44,19 +43,4 @@ class Main_handler:
             create_role_color = color
         )
 
-        embed, view, ephemeral, content = comp[0]
-        await interaction.response.send_message(
-                ephemeral=ephemeral,
-                **({"embed": embed} if embed else {}),
-                **({"view": view} if view else {}),
-                **({"content": content} if content else {})
-            )
-
-        if len(comp) > 0:
-            for embed, view, ephemeral, content in comp[1:]:
-                await interaction.followup.send(
-                    ephemeral=ephemeral,
-                    **({"embed": embed} if embed else {}),
-                    **({"view": view} if view else {}),
-                    **({"content": content} if content else {})
-                )
+        await send_profile_components(interaction, comp, delete_source_message=True)

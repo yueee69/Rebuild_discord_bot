@@ -2,7 +2,6 @@ from views.BASIC_VIEW import BASIC_VIEW
 
 from profile_management.view_constructor import Constructor, ErrorHandler
 from profile_management.resource_check import Create_role_tool
-from profile_management.card_events import event_handler
 from profile_management.DiscordPermissionsTool.main_driver import DiscordTools
 
 class Create_role:
@@ -13,7 +12,6 @@ class Create_role:
         if view:
             return view
         
-        event_handler.Handler(context).main()
         if not context.event_cancel:
             context.created_role = await DiscordTools.create_role(
                 context.interaction.guild, 
@@ -24,5 +22,3 @@ class Create_role:
             
         Create_role_tool().deduct_card(context)
         return Constructor(context).compelete()
-        
-    

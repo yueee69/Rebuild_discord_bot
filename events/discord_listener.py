@@ -1,9 +1,9 @@
 from nextcord.ext import commands
 from nextcord.ext import tasks
 from core import constants
-from new_bot.events.impl import message_event
-from new_bot.events.impl.coin_activity import VoiceCoinActivity
-from new_bot.events.impl.daily_event import DailyEvent
+from events.impl import message_event
+from events.impl.coin_activity import VoiceCoinActivity
+from events.impl.daily_event import DailyEvent
 
 class Discord_Event(commands.Cog):
     def __init__(self, bot: commands.Bot):

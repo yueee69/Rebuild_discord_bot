@@ -5,18 +5,17 @@ from nextcord import Embed, Interaction
 from core import constants
 from utils.general import Toolkit
 from utils.Buytools import Calculater
-from new_bot.callbacks import exchange_response_handler
+from callbacks import exchange_response_handler
 from .BASIC_VIEW import BASIC_VIEW
+from .ERROR import Error
 
 class Create:
     @staticmethod
-    def yes_or_no_button(user_object: object, fortune: int) -> View:
+    def yes_or_no_button(user: object, fortune: int) -> View:
         confirm_button = Button(label="確認",custom_id="yes",style = nextcord.ButtonStyle.green)
         cancel_button = Button(label="取消",custom_id="no",style = nextcord.ButtonStyle.red)
 
-        user = user_object.user
-
-        callback = exchange_response_handler.ExchangeResponseHandler(user.user_id, user_object, fortune)
+        callback = exchange_response_handler.ExchangeResponseHandler(user.user_id, user, fortune)
         
         confirm_button.callback = callback.on_check
         cancel_button.callback = callback.on_check
@@ -27,13 +26,9 @@ class Create:
         return view 
     
     @staticmethod
-    def check_user_status_components(fortune: int, user_object: object) -> BASIC_VIEW:
-
-        try:
-            user = user_object.user
-        except AttributeError:
-            return
-
+    def check_user_status_components(fortune: int, user: object) -> BASIC_VIEW:
+        if not user:
+            return BASIC_VIEW.views()
         view = None
 
         price = fortune * constants.FORTUNE_COIN_PRICE
@@ -51,7 +46,7 @@ class Create:
             embed.color = nextcord.Colour.red()
 
         else:
-            view = Create.yes_or_no_button(user_object, fortune)
+            view = Create.yes_or_no_button(user, fortune)
             embed = nextcord.Embed(title="付款確認", description=f"是否要消耗 {price:,} 鮭魚幣兌換 {fortune} 陽壽?")
             embed.color = nextcord.Colour.dark_blue()
             
@@ -70,6 +65,10 @@ class Create:
 
     @staticmethod
     def __exchange_success(interaction: Interaction,fortune: int, user: object):
+        price = fortune * constants.FORTUNE_COIN_PRICE
+        if user.coin < price:
+            return Error.error(due=f"鮭魚幣不足，還缺 {price - user.coin:,} 鮭魚幣。")
+
         Calculater.exchange_fortune(user, fortune)
         return Create.__exchange_success_components(interaction, fortune, user)
 

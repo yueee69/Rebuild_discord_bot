@@ -5,7 +5,7 @@ from nextcord.ui import View, Select
 from utils.general import Toolkit
 from .BASIC_VIEW import BASIC_VIEW
 
-from new_bot.callbacks import assign_role_callback
+from callbacks import assign_role_callback
 
 class Select_view:
     def __init__(self, random_choice: str) -> BASIC_VIEW:

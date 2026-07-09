@@ -7,7 +7,7 @@ from new_bot.commands.base_command import Cog_Extension
 from core import constants
 from managers.user_manager import UserManager
 from utils import global_views
-from new_bot.callbacks import assign_role_callback
+from callbacks import assign_role_callback
 
 class Assign_role(Cog_Extension):
     def __init__(self, bot):

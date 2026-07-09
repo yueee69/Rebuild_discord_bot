@@ -57,6 +57,10 @@ class AirManager(SingletonSQLiteManager):
         for user_id, times in self.cursor.fetchall():
             user = Air_Data({"times": times}, manager=self)
             self.__add_user(user, user_id)
+        self._remember_database_signature()
+
+    def reload_from_database(self):
+        self.load_all_users()
 
     def update(self):
         if self.debug:
@@ -74,6 +78,7 @@ class AirManager(SingletonSQLiteManager):
         return Air_Data({"times": 0}, manager=self)
 
     def get_user(self, userID: Union[str, int]) -> Air_Data:
+        self._reload_if_database_changed()
         user = self.AirDatas.get(str(userID))
         if not user:
             instance = self.__create_user_instance()
@@ -93,3 +98,4 @@ class AirManager(SingletonSQLiteManager):
                 now
             ))
         self.conn.commit()
+        self._remember_database_signature()

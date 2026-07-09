@@ -8,6 +8,8 @@ from nextcord import Interaction
 from dataclasses import dataclass
 import random
 
+from callbacks.profile_response import send_profile_components
+
 @dataclass
 class State_manager:
     interaction: object = None
@@ -28,23 +30,7 @@ class Main_handler:
             display_color = data.display_color
         )
 
-        embed, view, ephemeral, content = comp[0]
-        await data.interaction.message.delete()
-        await data.interaction.response.send_message(
-                ephemeral = ephemeral,
-                **({"embed": embed} if embed else {}),
-                **({"view": view} if view else {}),
-                **({"content": content} if content else {})
-            )
-
-        if len(comp) > 0:
-            for embed, view, ephemeral, content in comp[1:]:
-                await data.interaction.followup.send(
-                    ephemeral = ephemeral,
-                    **({"embed": embed} if embed else {}),
-                    **({"view": view} if view else {}),
-                    **({"content": content} if content else {})
-                )
+        await send_profile_components(data.interaction, comp, delete_source_message=True)
     
     
 class SelectHandler:

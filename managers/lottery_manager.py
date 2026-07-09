@@ -71,7 +71,7 @@ class LotteryState:
 
     @item_pool_is_lottery.setter
     def item_pool_is_lottery(self, value: bool):
-        self._item_pool_is_lottery = value
+        self._item_pool_is_lottery = bool(value)
         self._mark_dirty()
 
     @property
@@ -116,6 +116,7 @@ class LotteryStateManager(SingletonSQLiteManager):
     # ---------- state interaction ----------
 
     def get(self, user_id: str) -> LotteryState:
+        self._reload_if_database_changed()
         user_id = str(user_id)
         if user_id in self._states:
             return self._states[user_id]
@@ -162,6 +163,7 @@ class LotteryStateManager(SingletonSQLiteManager):
                 state.updated_at
             ))
             self.conn.commit()
+            self._remember_database_signature()
 
     def flush(self):
         with self._lock:
@@ -194,9 +196,11 @@ class LotteryStateManager(SingletonSQLiteManager):
                 self._dirty_states.discard(user_id)
 
             self.conn.commit()
+            self._remember_database_signature()
 
     def load_all_states(self):
         with self._lock:
+            self._states.clear()
             self.cursor.execute("""
                 SELECT user_id,
                        current_lottery_times,
@@ -209,6 +213,12 @@ class LotteryStateManager(SingletonSQLiteManager):
             for row in self.cursor.fetchall():
                 state = LotteryState.from_row(row, manager=self)
                 self._states[state.user_id] = state
+            self._remember_database_signature()
+
+    def reload_from_database(self):
+        with self._lock:
+            self._dirty_states.clear()
+            self.load_all_states()
 
     def reset_daily_item_pool_flags(self):
         with self._lock:
@@ -221,6 +231,7 @@ class LotteryStateManager(SingletonSQLiteManager):
                 (int(time.time()),)
             )
             self.conn.commit()
+            self._remember_database_signature()
 
     def close(self):
         with self._lock:

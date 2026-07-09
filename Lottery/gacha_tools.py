@@ -3,8 +3,19 @@
 """
 import random
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
-from new_bot.utils.general import Toolkit
+from utils.general import Toolkit
+
+
+@dataclass
+class DrawResult:
+    prize: str
+    rarity: str = ""
+    pity_before: int | None = None
+    pity_after: int | None = None
+    is_pity_reset: bool = False
+
 
 class Lottery(ABC):
     @abstractmethod
@@ -45,16 +56,17 @@ class Norm_pool(Lottery):
             }
         }
 
-    def draw(self, lottery_data: object, times: int = 10) -> list:
+    def draw(self, lottery_data: object, times: int = 10) -> list[DrawResult]:
         """
         Params:
             lottery_data: 用戶的 json 資料, 用於判斷大、小保底
             times: 抽取次數 預設10
         """
-        prizes = []
+        results = []
     
         for _ in range(times):
             weights = self.percent.copy()
+            pity_before = lottery_data.current_lottery_times
             lottery_data.current_lottery_times += 1
             lottery_data.total_lottery_times += 1
 
@@ -74,13 +86,19 @@ class Norm_pool(Lottery):
                 list(self.prize_pools[pool].keys()), 
                 weights=list(self.prize_pools[pool].values())
             )[0]
-            prizes.append(prize)
+            results.append(DrawResult(
+                prize=prize,
+                rarity=pool,
+                pity_before=pity_before,
+                pity_after=lottery_data.current_lottery_times,
+                is_pity_reset=pool == "大獎",
+            ))
 
             if prize == "空氣":
                 lottery_data.air_times += 1
 
 
-        return prizes
+        return results
 
 
 class Item_pool(Lottery):

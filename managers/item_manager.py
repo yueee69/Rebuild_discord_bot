@@ -139,6 +139,10 @@ class ItemManager(SingletonSQLiteManager):
                 "lottery": bool(lottery)
             }, manager=self)
             self.__add_user(user, user_id)
+        self._remember_database_signature()
+
+    def reload_from_database(self):
+        self.load_all_users()
             
     def update(self):
         if self.debug:
@@ -158,6 +162,7 @@ class ItemManager(SingletonSQLiteManager):
         return Item_data(new_data, manager=self)
 
     def get_user(self, userID: Union[str, int]) -> Item_data:
+        self._reload_if_database_changed()
         user = self.ItemDatas.get(str(userID)) 
         if not user:
             instance = self.__create_user_instance()
@@ -184,6 +189,7 @@ class ItemManager(SingletonSQLiteManager):
                 now
             ))
         self.conn.commit()
+        self._remember_database_signature()
 
     def reset_daily_lottery_flags(self):
         with self._lock:
@@ -196,6 +202,7 @@ class ItemManager(SingletonSQLiteManager):
                 (int(time.time()),)
             )
             self.conn.commit()
+            self._remember_database_signature()
 
 
 class ItemTools:
@@ -213,7 +220,6 @@ class ItemTools:
         if prize in self.ITEM_POOLS_TRANS:
             attr_name = self.ITEM_POOLS_TRANS[prize]
             setattr(self.item, attr_name, getattr(self.item, attr_name) + 1)
-            self.item.manager.update()
 
     def random_card(self) -> str:
         """隨機抽一張卡片，返回一個名稱"""

@@ -30,17 +30,49 @@ class SingletonSQLiteManager:
         self._lock = threading.RLock()
         self._closed = False
 
-        db_path = Path(__file__).resolve().parent.parent / "database" / self.DB_NAME
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._db_path = Path(__file__).resolve().parent.parent / "database" / self.DB_NAME
+        self._db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.conn = sqlite3.connect(self._db_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.cursor.execute("PRAGMA journal_mode=WAL")
         self.cursor.execute("PRAGMA foreign_keys=ON")
+        self._remember_database_signature()
 
         self._initialized = True
         register(self)
         return True
+
+    def _database_signature(self):
+        paths = [
+            self._db_path,
+            Path(f"{self._db_path}-wal"),
+            Path(f"{self._db_path}-shm"),
+        ]
+        signature = []
+        for path in paths:
+            if path.exists():
+                stat = path.stat()
+                signature.append((str(path), stat.st_mtime_ns, stat.st_size))
+            else:
+                signature.append((str(path), None, None))
+        return tuple(signature)
+
+    def _remember_database_signature(self):
+        self._db_signature = self._database_signature()
+
+    def _database_changed(self) -> bool:
+        return getattr(self, "_db_signature", None) != self._database_signature()
+
+    def _reload_if_database_changed(self):
+        if getattr(self, "_closed", False):
+            return
+        if not self._database_changed():
+            return
+
+        reload = getattr(self, "reload_from_database", None)
+        if callable(reload):
+            reload()
 
     def _table_is_empty(self, table_name: str) -> bool:
         self.cursor.execute(f"SELECT 1 FROM {table_name} LIMIT 1")

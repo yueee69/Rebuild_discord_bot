@@ -145,7 +145,8 @@ class Callback:
         await self.interaction.response.edit_message(
             **({"embed": embed} if embed else {}),
             **({"view": view} if view else {}),
-            **({"content": content} if content else {})
+            **({"content": content} if content else {}),
+            attachments=[],
         )
 
     async def _fail(self, message: str, selected_user: User, coin_id: str):

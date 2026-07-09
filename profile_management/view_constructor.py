@@ -5,10 +5,6 @@ from utils.general import Toolkit
 from views.BASIC_VIEW import BASIC_VIEW
 from views.ERROR import Error
 
-from views import nick_view
-from views import create_role_view
-from views import assign_role_view
-
 from views.item_crad_check_view import Create
 
 class ErrorHandler:
@@ -33,6 +29,8 @@ class Constructor:
         return BASIC_VIEW.views(embed = embed)
 
     def compelete(self) -> list[BASIC_VIEW]:
+        from views import assign_role_view, create_role_view, nick_view
+
         maps = {
             "nick": nick_view.Create.result,
             "create_role": create_role_view.Create.result,

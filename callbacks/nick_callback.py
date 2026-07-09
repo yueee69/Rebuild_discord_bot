@@ -1,6 +1,7 @@
 from nextcord import Interaction
 
 from profile_management import main_driver
+from callbacks.profile_response import send_profile_components
 
 class Main_handler:
     @staticmethod
@@ -12,19 +13,4 @@ class Main_handler:
             nick_name = name
             )
 
-        embed, view, ephemeral, content = comp[0]
-        await interaction.response.send_message(
-                ephemeral=ephemeral,
-                **({"embed": embed} if embed else {}),
-                **({"view": view} if view else {}),
-                **({"content": content} if content else {})
-            )
-
-        if len(comp) > 0:
-            for embed, view, ephemeral, content in comp[1:]:
-                await interaction.followup.send(
-                    ephemeral=ephemeral,
-                    **({"embed": embed} if embed else {}),
-                    **({"view": view} if view else {}),
-                    **({"content": content} if content else {})
-                )
+        await send_profile_components(interaction, comp)

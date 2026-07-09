@@ -38,7 +38,7 @@ class Toolkit():
         if only_hour:
             return int_hour
 
-        hour = trans_string(str(int_hour))
+        hour = trans_string(str(int_hour).zfill(2))
         minute = trans_string(str(taipei_time.minute).zfill(2))
 
         period = "𝐀𝐌" if int_hour < 12 else "𝐏𝐌"

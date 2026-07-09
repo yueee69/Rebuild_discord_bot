@@ -95,8 +95,13 @@ class DailyShopManager(SingletonSQLiteManager):
                     "left_count": left_count
                 }, manager=self, row_id=position)
             )
+        self._remember_database_signature()
+
+    def reload_from_database(self):
+        self.load_all_goods()
 
     def get_goods(self, *index: int):
+        self._reload_if_database_changed()
         """
         如果提供了 index，就只取對應商品，否則回傳全部
         """
@@ -178,6 +183,7 @@ class DailyShopManager(SingletonSQLiteManager):
                 return "sold_out"
 
             self.conn.commit()
+            self._remember_database_signature()
 
         for goods in self.shop_data:
             if goods.row_id == int(position):
@@ -206,6 +212,7 @@ class DailyShopManager(SingletonSQLiteManager):
                 now
             ))
         self.conn.commit()
+        self._remember_database_signature()
 
 
 @dataclass
@@ -241,7 +248,15 @@ class DailyShopModel:
         ]
 
     def random_goods(self, count: int = constants.DAILY_SHOP_RANDOM_GOODS_COUNT) -> list[DailyShopItem]:
-        return random.choices(self.shop_pool, weights = [item.weight for item in self.shop_pool], k = count)
+        count = min(count, len(self.shop_pool))
+        pool = list(self.shop_pool)
+        result = []
+        for _ in range(count):
+            weights = [item.weight for item in pool]
+            selected = random.choices(pool, weights=weights, k=1)[0]
+            result.append(selected)
+            pool.remove(selected)
+        return result
 
 
 def constants_today_key() -> str:

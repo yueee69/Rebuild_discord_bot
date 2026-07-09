@@ -37,7 +37,7 @@ class Music(Cog_Extension):
     async def play(
         self,
         interaction: Interaction,
-        link: str = SlashOption(name="連結", description="YouTube 或 Lavalink 節點支援的音樂連結", required=True),
+        link: str = SlashOption(name="連結", description="貼上 Youtube 或是 Spotify 歌曲連結", required=True),
     ):
         await interaction.response.defer()
         player = await self.service.connect_to_author_voice(interaction)
@@ -72,15 +72,17 @@ class Music(Cog_Extension):
         first_track = queued_tracks.pop(0)
         state.queue.extend(queued_tracks)
         await self.service.start_track(interaction.guild, player, first_track)
-        state.panel_message = await interaction.followup.send(
-            **component_kwargs(
+        state.panel_message = await interaction.channel.send(
+            **edit_kwargs(
                 MusicPanelPage(
                     self,
                     interaction.guild,
                     content=self.build_start_tracks_message(first_track, queued_tracks, playlist_name),
                 ).get_components()
-            ),
-            wait=True,
+            )
+        )
+        await interaction.followup.send(
+            **component_kwargs(message_components("✅ 已建立音樂控制面板。"))
         )
 
     @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
@@ -94,8 +96,10 @@ class Music(Cog_Extension):
             await interaction.response.send_message(**component_kwargs(message_components("目前沒有正在播放的歌曲。")))
             return
 
-        await interaction.response.send_message(**component_kwargs(MusicPanelPage(self, interaction.guild).get_components()))
-        state.panel_message = await interaction.original_message()
+        state.panel_message = await interaction.channel.send(
+            **edit_kwargs(MusicPanelPage(self, interaction.guild).get_components())
+        )
+        await interaction.response.send_message(**component_kwargs(message_components("✅ 已重新建立音樂控制面板。")))
 
     @nextcord.slash_command(name="音量", description="調整音樂音量", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
@@ -284,6 +288,11 @@ class Music(Cog_Extension):
             )
         except nextcord.NotFound:
             state.panel_message = None
+        except nextcord.HTTPException as exc:
+            if getattr(exc, "status", None) == 401 or getattr(exc, "code", None) == 50027:
+                state.panel_message = None
+                return
+            raise
 
     def build_add_tracks_message(self, tracks: list[QueuedTrack], playlist_name: str | None) -> str:
         if playlist_name:

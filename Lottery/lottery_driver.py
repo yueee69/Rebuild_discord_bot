@@ -37,7 +37,7 @@ class Driver:
         if view:
             return view
 
-        userLotteryData.item_pool_is_lottery += 1
+        userLotteryData.item_pool_is_lottery = True
 
         prize = gacha_tools.Item_pool().draw(constants.ITEM_LOTTERY_DRAW_COUNT)
         dump_items.Item_pool().dump_items(prize, userData)

@@ -13,7 +13,7 @@ class Context:
     interaction: Interaction
     service: str
     user_item: Item_data
-    target_item: Item_data
+    target_item: Item_data | None
     target_user : object
     nick_name: str
     create_role_name: str
@@ -42,7 +42,7 @@ class Driver:
             interaction = interaction,
             service = service,
             user_item = item_manager.get_user(interaction.user.id),
-            target_item = item_manager.get_user(target_user.id),
+            target_item = item_manager.get_user(target_user.id) if target_user else None,
             target_user = target_user,
             nick_name = nick_name,
             create_role_name = create_role_name,

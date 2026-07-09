@@ -2,8 +2,8 @@ import nextcord
 from nextcord import Interaction, Embed
 from nextcord.ui import Modal, TextInput, Button, View
 
-from new_bot.callbacks import lottery_handler
-from new_bot.utils.general import Toolkit
+from callbacks import lottery_handler
+from utils.general import Toolkit
 from .BASIC_VIEW import BASIC_VIEW
 
 import asyncio
@@ -121,7 +121,8 @@ class Item_pool_components:
         embed = nextcord.Embed(title="✨ 這波純賺不虧 ✨", color=Toolkit.randomcolor())
         embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/747551295489179778.gif")
         for item in prizes:
-            embed.add_field(name=f"🎁 {item}", value="", inline=False)
+            prize = getattr(item, "prize", item)
+            embed.add_field(name=f"🎁 {prize}", value="", inline=False)
         return BASIC_VIEW.views(embed=embed)
     
 class Result:
@@ -130,5 +131,6 @@ class Result:
         embed = nextcord.Embed(title = "🔥你的手氣逆天了！", description = "以下是你抽取的獎品", color = Toolkit.randomcolor())
         embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/747551295489179778.gif")
         for item in prizes:
-            embed.add_field(name = item, value = '', inline = False)
+            prize = getattr(item, "prize", item)
+            embed.add_field(name = prize, value = '', inline = False)
         return BASIC_VIEW.views(embed = embed)

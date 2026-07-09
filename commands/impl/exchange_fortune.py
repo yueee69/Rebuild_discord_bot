@@ -25,10 +25,9 @@ class Exchange_fortune(Cog_Extension):
             min_value=1,
             required=True
         )):
-        userData = user_manager.UserManager()
-        _, status = userData.get_user(interaction.user.id)
+        user, status = user_manager.UserManager().get_user(interaction.user.id)
         embed, view, ephemeral, content = global_views.UserCallback.get_Components(
-            status, Create.check_user_status_components(fortune, userData)
+            status, Create.check_user_status_components(fortune, user)
         )
         await interaction.response.send_message(
             ephemeral=ephemeral, 

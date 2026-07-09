@@ -10,7 +10,11 @@ class GenericModal(Modal):
     :param input_fields: 一個欄位配置列表，每個欄位用 dict 定義。
     :param custom_callback: 自訂的 callback 函數，會在 on_submit 裡被呼叫，
     """
-    def __init__(self, title: str, input_fields: list, custom_callback, custom_id: str = "") -> Modal:
+    def __init__(self, title: str, input_fields: list, custom_callback, custom_id: str = "generic_modal") -> Modal:
+        custom_id = custom_id or "generic_modal"
+        if len(custom_id) > 100:
+            raise ValueError("Modal custom_id must be 100 characters or fewer.")
+
         super().__init__(title = title, custom_id = custom_id)
         self.inputs = {}  # 儲存每個欄位的物件
         self.custom_callback = custom_callback

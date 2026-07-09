@@ -23,7 +23,8 @@ class Create:
                     "style": nextcord.TextInputStyle.short
                 }
             ],
-            custom_callback = self.on_submit
+            custom_callback = self.on_submit,
+            custom_id = f"{self.service}:{self.user.id}"
         )
     async def on_submit(self, interaction: Interaction, response: dict):
         name = response["name"]

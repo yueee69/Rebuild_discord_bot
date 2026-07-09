@@ -187,12 +187,14 @@ class UserManager(SingletonSQLiteManager):
             self.cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {definition}")
 
     def exists(self, user_id: Union[str, int]) -> bool:
+        self._reload_if_database_changed()
         uid = str(user_id)
         with self._lock:
             self.cursor.execute("SELECT 1 FROM account_state WHERE user_id = ? LIMIT 1", (uid,))
             return self.cursor.fetchone() is not None
 
     def get(self, user_id: Union[str, int], *, create_if_missing: bool = True) -> Optional[User]:
+        self._reload_if_database_changed()
         uid = str(user_id)
         if uid in self._states:
             return self._states[uid]
@@ -242,6 +244,7 @@ class UserManager(SingletonSQLiteManager):
                 state.updated_at
             ))
             self.conn.commit()
+            self._remember_database_signature()
 
     def flush(self):
         with self._lock:
@@ -280,6 +283,7 @@ class UserManager(SingletonSQLiteManager):
                 self._dirty_states.discard(user_id)
 
             self.conn.commit()
+            self._remember_database_signature()
 
     def update(self):
         self.flush()
@@ -289,6 +293,7 @@ class UserManager(SingletonSQLiteManager):
 
     def load_all_users(self):
         with self._lock:
+            self._states.clear()
             self.cursor.execute("""
                 SELECT user_id, coin, fortune, total_gain, level,
                        chat_today, voice_today, stream_today, updated_at
@@ -297,6 +302,12 @@ class UserManager(SingletonSQLiteManager):
             for row in self.cursor.fetchall():
                 state = User.from_row(row, manager=self)
                 self._states[state.user_id] = state
+            self._remember_database_signature()
+
+    def reload_from_database(self):
+        with self._lock:
+            self._dirty_states.clear()
+            self.load_all_users()
 
     def add_chat_coin(self, user_id: Union[str, int], amount: int) -> bool:
         user = self.get(user_id, create_if_missing=False)
@@ -336,6 +347,7 @@ class UserManager(SingletonSQLiteManager):
                 ("daily_activity_date", today)
             )
             self.conn.commit()
+            self._remember_database_signature()
             return True
 
     @staticmethod
@@ -356,13 +368,16 @@ class UserManager(SingletonSQLiteManager):
                 (key, value)
             )
             self.conn.commit()
+            self._remember_database_signature()
 
     @property
     def UserDatas(self):
+        self._reload_if_database_changed()
         self.load_all_users()
         return self._states
 
     def get_user(self, userID: Union[str, int], from_register: bool = False) -> Tuple[Optional[User], str]:
+        self._reload_if_database_changed()
         uid = str(userID)
 
         if self.exists(uid):
