@@ -45,11 +45,15 @@ XTAL_LOTTERY_MIN_DRAWS = 1
 XTAL_LOTTERY_MAX_DRAWS = 25
 
 # ======== lavalink settings =========
-LAVALINK_HOST = os.getenv("LAVALINK_HOST", "lava2.kasawa.pro")
-LAVALINK_PORT = int(os.getenv("LAVALINK_PORT", "2334"))
-LAVALINK_PASSWORD = os.getenv("LAVALINK_PASSWORD", "youshallnotpass")
-LAVALINK_SECURE = os.getenv("LAVALINK_SECURE", "false").lower() in {"1", "true", "yes", "on"}
-LAVALINK_LABEL = os.getenv("LAVALINK_LABEL", "PUBLIC_KASAWA")
+LAVALINK_HOST = os.getenv("LAVALINK_HOST", "lavalinkv4.serenetia.com")
+LAVALINK_PORT = int(os.getenv("LAVALINK_PORT", "443"))
+LAVALINK_PASSWORD = os.getenv("LAVALINK_PASSWORD", "https://dsc.gg/ajidevserver")
+LAVALINK_SECURE = (
+    os.getenv("LAVALINK_SECURE", "false").lower() in {"1", "true", "yes", "on"}
+    or LAVALINK_PORT == 443
+)
+LAVALINK_LABEL = os.getenv("LAVALINK_LABEL", "PUBLIC_LAVALINK")
+LAVALINK_REGION = os.getenv("LAVALINK_REGION", "asia")
 
 DO_NOT_ROLE = [
     "頭等鮭魚腹",
@@ -105,6 +109,3 @@ STR_MUSIC_HELP = \
 權限限制：
 控制面板、音量、佇列、離開等操作，只允許和機器人在同一個語音房的人使用。
 """
-
-
-

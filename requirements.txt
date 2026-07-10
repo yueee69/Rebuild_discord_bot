@@ -1,5 +1,5 @@
 nextcord
-mafic
+lavalink
 openai
 python-dotenv
 pytz

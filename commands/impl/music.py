@@ -1,11 +1,10 @@
-import mafic
 import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import application_checks, commands
 
 from core import constants
 from features.music.music_service import MusicService, QueuedTrack, RepeatMode
-from new_bot.commands.base_command import Cog_Extension
+from commands.base_command import Cog_Extension
 from views.music_views import (
     MusicPanelPage,
     MusicQueuePage,
@@ -19,8 +18,9 @@ class Music(Cog_Extension):
     def __init__(self, bot):
         super().__init__(bot)
         self.service = MusicService(bot)
+        self.service.panel_refresh_callback = self.refresh_panel
 
-    @nextcord.slash_command(name="加入語音", description="讓機器人加入你目前所在的語音房")
+    @nextcord.slash_command(name="加入語音", description="讓機器人加入你目前所在的語音房", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def join_voice(self, interaction: Interaction):
         await interaction.response.defer(ephemeral=True)
@@ -28,11 +28,13 @@ class Music(Cog_Extension):
         if not player:
             return
 
+        channel = interaction.guild.get_channel(player.channel_id) if player.channel_id else None
+        channel_name = channel.name if channel else "目前語音頻道"
         await interaction.followup.send(
-            **component_kwargs(message_components(f"✅ 成功加入 `{player.channel.name}` 語音房！"))
+            **component_kwargs(message_components(f"✅ 成功加入 `{channel_name}` 語音房！"))
         )
 
-    @nextcord.slash_command(name="播放", description="透過連結播放或加入佇列")
+    @nextcord.slash_command(name="播放", description="透過連結播放或加入佇列", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def play(
         self,
@@ -85,7 +87,7 @@ class Music(Cog_Extension):
             **component_kwargs(message_components("✅ 已建立音樂控制面板。"))
         )
 
-    @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板")
+    @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def music_panel(self, interaction: Interaction):
         if not await self.service.ensure_same_voice(interaction):
@@ -101,7 +103,7 @@ class Music(Cog_Extension):
         )
         await interaction.response.send_message(**component_kwargs(message_components("✅ 已重新建立音樂控制面板。")))
 
-    @nextcord.slash_command(name="音量", description="調整音樂音量")
+    @nextcord.slash_command(name="音量", description="調整音樂音量", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def volume(
         self,
@@ -113,7 +115,7 @@ class Music(Cog_Extension):
 
         await self.set_volume(interaction, value)
 
-    @nextcord.slash_command(name="離開語音", description="停止播放並離開語音房")
+    @nextcord.slash_command(name="離開語音", description="停止播放並離開語音房", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def leave_voice(self, interaction: Interaction):
         if not await self.service.ensure_same_voice(interaction):
@@ -128,38 +130,13 @@ class Music(Cog_Extension):
         await interaction.response.send_message(**component_kwargs(message_components("✅ 已停止播放並離開語音房。")))
         await self.refresh_panel(interaction.guild)
 
-    @commands.Cog.listener()
-    async def on_track_end(self, event: mafic.TrackEndEvent):
-        print(f"(music) track ended: reason={event.reason.value}")
-        if event.reason in {mafic.EndReason.REPLACED, mafic.EndReason.CLEANUP}:
-            return
-
-        guild = self.bot.get_guild(event.player.guild.id)
-        if guild:
-            await self.service.play_next(guild, event.player)
-            await self.refresh_panel(guild)
-
-    @commands.Cog.listener()
-    async def on_track_exception(self, event: mafic.TrackExceptionEvent):
-        guild = self.bot.get_guild(event.player.guild.id)
-        if guild:
-            await self.service.play_next(guild, event.player)
-            await self.refresh_panel(guild)
-
-    @commands.Cog.listener()
-    async def on_track_stuck(self, event: mafic.TrackStuckEvent):
-        guild = self.bot.get_guild(event.player.guild.id)
-        if guild:
-            await self.service.play_next(guild, event.player)
-            await self.refresh_panel(guild)
-
     async def toggle_pause(self, interaction: Interaction):
         player = self.service.get_player(interaction)
         if not player:
             await interaction.response.send_message(**component_kwargs(message_components("我目前不在語音房。")))
             return
 
-        await player.pause(not player.paused)
+        await player.set_pause(not player.paused)
         action = "暫停" if player.paused else "繼續播放"
         await interaction.response.edit_message(
             **edit_kwargs(
@@ -262,7 +239,7 @@ class Music(Cog_Extension):
 
         state = self.service.get_state(interaction.guild.id)
         state.volume = value
-        await player.update(volume=MusicService.lavalink_volume(value), replace=True)
+        await player.set_volume(MusicService.effective_volume(value))
 
         content = f"✅ 成功修改音量！\n{interaction.user.display_name} 把音量修改到了 **{value if value != 0 else '靜音'}**"
         if edit_panel and not interaction.response.is_done():

@@ -130,7 +130,7 @@ class MusicPanelPage:
 
         track = self.state.current.track
         embed.add_field(name="歌曲平台 | 名稱", value=MusicService.track_display(track, self.music.bot), inline=False)
-        embed.add_field(name="歌曲長度", value=MusicService.format_duration(getattr(track, "length", 0)), inline=True)
+        embed.add_field(name="歌曲長度", value=MusicService.format_duration(getattr(track, "duration", getattr(track, "length", 0))), inline=True)
         embed.add_field(name="點歌用戶", value=self.state.current.requester_name, inline=True)
         embed.add_field(name="當前音量", value=str(self.state.volume), inline=True)
         embed.add_field(name="播放狀態", value=self.state.repeat_mode.value, inline=True)
