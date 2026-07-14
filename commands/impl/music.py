@@ -90,12 +90,8 @@ class Music(Cog_Extension):
     @nextcord.slash_command(name="音樂面板", description="顯示目前播放狀態與控制面板", guild_ids=constants.ENABLE_COMMAND_USE_GUILDS)
     @application_checks.guild_only()
     async def music_panel(self, interaction: Interaction):
-        if not await self.service.ensure_same_voice(interaction):
-            return
-
         state = self.service.get_state(interaction.guild.id)
-        if not state.current:
-            await interaction.response.send_message(**component_kwargs(message_components("目前沒有正在播放的歌曲。")))
+        if state.current and not await self.service.ensure_same_voice(interaction):
             return
 
         state.panel_message = await interaction.channel.send(
@@ -224,8 +220,30 @@ class Music(Cog_Extension):
 
         await self.service.stop_and_clear(interaction.guild, player)
         await interaction.response.edit_message(
-            **edit_kwargs(MusicPanelPage(self, interaction.guild, content="✅ 已停止播放並離開語音房。", include_view=False).get_components())
+            **edit_kwargs(MusicPanelPage(self, interaction.guild, content="✅ 已停止播放並離開語音房。").get_components())
         )
+
+    async def show_node_info(self, interaction: Interaction):
+        player = self.service.get_player(interaction)
+        node = player.node if player and player.node else None
+        info = self.service.get_lavalink_node_info(node)
+        uptime = MusicService.format_duration(info["uptime_ms"]) if info["uptime_ms"] else "N/A"
+        session = info["session_id"] or "N/A"
+
+        embed = nextcord.Embed(title="Lavalink 節點資訊", color=nextcord.Colour.blurple())
+        embed.add_field(name="Node", value=str(info["name"]), inline=True)
+        embed.add_field(name="Region", value=str(info["region"]), inline=True)
+        embed.add_field(name="Available", value="Yes" if info["available"] else "No", inline=True)
+        embed.add_field(name="Server URL", value=f"`{info['url']}`", inline=False)
+        embed.add_field(name="Host", value=f"`{info['host']}`", inline=True)
+        embed.add_field(name="Port", value=f"`{info['port']}`", inline=True)
+        embed.add_field(name="Secure", value=str(info["secure"]), inline=True)
+        embed.add_field(name="Session ID", value=f"`{session}`", inline=False)
+        embed.add_field(name="Players", value=str(info["players"]), inline=True)
+        embed.add_field(name="Playing", value=str(info["playing_players"]), inline=True)
+        embed.add_field(name="Uptime", value=uptime, inline=True)
+        embed.add_field(name="Penalty", value=f"{float(info['penalty']):.2f}", inline=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     async def set_volume(self, interaction: Interaction, value: int, edit_panel: bool = False):
         if value < 0 or value > 100:

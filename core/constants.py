@@ -1,7 +1,19 @@
+import json
 import os
+from pathlib import Path
 
 # ======== variables =========
 TIME_ZONE = 8  # UTC+8
+
+# ======== character settings =========
+CHARACTER_MAX_LEVEL = 325
+CHARACTER_EXP_QUEST_SKIP_COST = 500_000
+CHARACTER_EXP_DIARY_ENUMERATION_LIMIT = 20
+CHARACTER_EXP_QUEST_CSV_URL = (
+    "https://docs.google.com/spreadsheets/d/"
+    "1hh66cAWlDk2uJlAbv2ivdrRNQYuK4RPuWF4iB48T31g/pub"
+    "?gid=1111992028&single=true&output=csv&range=A:I"
+)
 
 # ======== coin activity settings =========
 USER_LEVEL_COIN_UNIT = 1500
@@ -45,15 +57,22 @@ XTAL_LOTTERY_MIN_DRAWS = 1
 XTAL_LOTTERY_MAX_DRAWS = 25
 
 # ======== lavalink settings =========
-LAVALINK_HOST = os.getenv("LAVALINK_HOST", "lavalinkv4.serenetia.com")
-LAVALINK_PORT = int(os.getenv("LAVALINK_PORT", "443"))
-LAVALINK_PASSWORD = os.getenv("LAVALINK_PASSWORD", "https://dsc.gg/ajidevserver")
-LAVALINK_SECURE = (
-    os.getenv("LAVALINK_SECURE", "false").lower() in {"1", "true", "yes", "on"}
-    or LAVALINK_PORT == 443
-)
-LAVALINK_LABEL = os.getenv("LAVALINK_LABEL", "PUBLIC_LAVALINK")
-LAVALINK_REGION = os.getenv("LAVALINK_REGION", "asia")
+BASE_DIR = Path(__file__).resolve().parent.parent
+LAVALINK_NODES_FILE = BASE_DIR / "Json" / "lavalink_nodes.json"
+
+
+def _load_lavalink_nodes() -> list[dict]:
+    with LAVALINK_NODES_FILE.open("r", encoding="utf-8") as file:
+        nodes = json.load(file)
+
+    if not isinstance(nodes, list) or not nodes:
+        raise RuntimeError(f"{LAVALINK_NODES_FILE} must contain at least one Lavalink node.")
+
+    return nodes
+
+
+LAVALINK_NODES = _load_lavalink_nodes()
+LAVALINK_LABELS = tuple(node["name"] for node in LAVALINK_NODES)
 
 DO_NOT_ROLE = [
     "頭等鮭魚腹",

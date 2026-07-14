@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Awaitable, Callable, Optional
 
+import aiohttp
 import lavalink
 import nextcord
 from nextcord import Interaction
@@ -23,6 +24,7 @@ class QueuedTrack:
     track: lavalink.AudioTrack
     requester_id: int
     requester_name: str
+    failed_nodes: set[str] = field(default_factory=set)
 
 
 @dataclass
@@ -73,6 +75,11 @@ class LavalinkVoiceClient(nextcord.VoiceProtocol):
         self.cleanup()
 
 
+class ManualQueuePlayer(lavalink.DefaultPlayer):
+    async def handle_event(self, event):
+        return None
+
+
 class MusicService:
     SOURCE_EMOJIS = {
         "spotify": ("spotify", 1524523714476114061, "[Spotify]"),
@@ -88,34 +95,34 @@ class MusicService:
         self.states: dict[int, GuildMusicState] = {}
         self.panel_refresh_callback: PanelRefreshCallback | None = None
         self._event_hooks_registered = False
+        self._node_connect_task: asyncio.Task | None = None
+        self._node_cursor = 0
+        self._node_disconnect_counts: dict[str, int] = {}
         self.bot.loop.create_task(self.add_lavalink_node())
 
     async def add_lavalink_node(self):
+        current_task = asyncio.current_task()
+        if self._node_connect_task and self._node_connect_task is not current_task and not self._node_connect_task.done():
+            await self._node_connect_task
+            return
+
+        self._node_connect_task = current_task
         try:
             await self.bot.wait_until_ready()
             client = self._get_or_create_client()
-            node = next((node for node in client.node_manager.nodes if node.name == constants.LAVALINK_LABEL), None)
-            if node:
-                await self._wait_for_node_ready(node)
-                self.node_ready.set()
-                self.node_error = None
-                return
-
-            node = client.add_node(
-                host=constants.LAVALINK_HOST,
-                port=constants.LAVALINK_PORT,
-                password=constants.LAVALINK_PASSWORD,
-                region=constants.LAVALINK_REGION,
-                name=constants.LAVALINK_LABEL,
-                ssl=constants.LAVALINK_SECURE,
-            )
-            await self._wait_for_node_ready(node)
+            configured_nodes = self._ensure_lavalink_nodes(client)
+            node = self._select_ready_node() or await self._connect_next_configured_node()
+            self._node_cursor = self._node_index(node.name)
             self.node_ready.set()
             self.node_error = None
-            print(f"(music) Lavalink node connected: {constants.LAVALINK_LABEL}")
+            print(f"(music) Lavalink node connected: {node.name}")
         except Exception as exc:
+            self.node_ready.clear()
             self.node_error = str(exc)
             print(f"(music) Lavalink node connect failed: {exc}")
+        finally:
+            if self._node_connect_task is current_task:
+                self._node_connect_task = None
 
     async def _wait_for_node_ready(self, node: lavalink.Node, timeout: float = 20) -> None:
         deadline = self.bot.loop.time() + timeout
@@ -126,6 +133,174 @@ class MusicService:
 
         raise RuntimeError(f"Lavalink node {node.name} did not become ready within {timeout:g}s.")
 
+    async def _wait_for_any_node_ready(self, nodes: list[lavalink.Node], timeout: float = 25) -> lavalink.Node:
+        deadline = self.bot.loop.time() + timeout
+        while self.bot.loop.time() < deadline:
+            node = self._select_ready_node()
+            if node:
+                return node
+            await asyncio.sleep(0.25)
+
+        names = ", ".join(node.name for node in nodes)
+        raise RuntimeError(f"No Lavalink node became ready within {timeout:g}s: {names}.")
+
+    async def _connect_next_configured_node(
+        self,
+        *,
+        exclude_names: set[str] | None = None,
+        timeout_per_node: float = 8,
+    ) -> lavalink.Node:
+        exclude_names = set(exclude_names or set())
+        if self.client:
+            self._ensure_lavalink_nodes(self.client)
+
+        nodes = self._configured_nodes()
+        if not nodes:
+            raise RuntimeError("No Lavalink nodes are configured.")
+
+        failures = []
+        for offset in range(len(nodes)):
+            index = (self._node_cursor + offset) % len(nodes)
+            node = nodes[index]
+            if node.name in exclude_names:
+                continue
+
+            try:
+                await node.connect()
+                await self._wait_for_node_ready(node, timeout=timeout_per_node)
+                return node
+            except Exception as exc:
+                failures.append(f"{node.name}: {exc}")
+                await self._drop_lavalink_node(node)
+
+        details = "; ".join(failures) if failures else "all candidates excluded"
+        raise RuntimeError(f"No Lavalink node connected: {details}.")
+
+    async def _drop_lavalink_node(self, node: lavalink.Node):
+        with contextlib.suppress(Exception):
+            await node.destroy()
+        if self.client and node in self.client.node_manager.nodes:
+            with contextlib.suppress(Exception):
+                self.client.node_manager.remove(node)
+
+    def _ensure_lavalink_nodes(self, client: lavalink.Client) -> list[lavalink.Node]:
+        existing = {node.name: node for node in client.node_manager.nodes}
+        nodes = []
+        for config in constants.LAVALINK_NODES:
+            node = existing.get(config["name"])
+            if not node:
+                node = client.add_node(
+                    host=config["host"],
+                    port=int(config["port"]),
+                    password=config["password"],
+                    region=config.get("region", "asia"),
+                    name=config["name"],
+                    ssl=bool(config.get("secure", False)),
+                    connect=False,
+                )
+            nodes.append(node)
+        return nodes
+
+    def _configured_nodes(self) -> list[lavalink.Node]:
+        if not self.client:
+            return []
+        by_name = {node.name: node for node in self.client.node_manager.nodes}
+        return [by_name[name] for name in constants.LAVALINK_LABELS if name in by_name]
+
+    @staticmethod
+    def _node_index(name: str) -> int:
+        try:
+            return constants.LAVALINK_LABELS.index(name)
+        except ValueError:
+            return 0
+
+    def _get_lavalink_node(self) -> lavalink.Node | None:
+        return self._select_ready_node() or next(iter(self._configured_nodes()), None)
+
+    def get_lavalink_node_info(self, node: lavalink.Node | None = None) -> dict:
+        node = node or self._select_ready_node() or self._get_lavalink_node()
+        if not node:
+            return {
+                "name": "N/A",
+                "url": "N/A",
+                "host": "N/A",
+                "port": "N/A",
+                "secure": "N/A",
+                "region": "N/A",
+                "available": False,
+                "session_id": None,
+                "players": 0,
+                "playing_players": 0,
+                "uptime_ms": 0,
+                "penalty": 0,
+            }
+
+        config = next((item for item in constants.LAVALINK_NODES if item["name"] == node.name), {})
+        secure = bool(config.get("secure", False))
+        scheme = "https" if secure else "http"
+        host = config.get("host", "unknown")
+        port = config.get("port", "unknown")
+        stats = node.stats
+
+        return {
+            "name": node.name,
+            "url": f"{scheme}://{host}:{port}",
+            "host": host,
+            "port": port,
+            "secure": secure,
+            "region": node.region,
+            "available": bool(node.available),
+            "session_id": node.session_id,
+            "players": getattr(stats, "players", 0),
+            "playing_players": getattr(stats, "playing_players", 0),
+            "uptime_ms": getattr(stats, "uptime", 0),
+            "penalty": getattr(getattr(stats, "penalty", None), "total", 0),
+        }
+
+    def _select_ready_node(self, *, exclude_names: set[str] | None = None) -> lavalink.Node | None:
+        exclude_names = exclude_names or set()
+        nodes = self._configured_nodes()
+        if not nodes:
+            return None
+
+        for offset in range(len(nodes)):
+            index = (self._node_cursor + offset) % len(nodes)
+            node = nodes[index]
+            if node.name not in exclude_names and node.available and node.session_id:
+                return node
+        return None
+
+    def _select_next_ready_node(
+        self,
+        current: lavalink.Node | None = None,
+        *,
+        exclude_names: set[str] | None = None,
+    ) -> lavalink.Node | None:
+        exclude_names = set(exclude_names or set())
+        nodes = self._configured_nodes()
+        if not nodes:
+            return None
+
+        start_index = self._node_index(current.name) + 1 if current else self._node_cursor
+        for offset in range(len(nodes)):
+            index = (start_index + offset) % len(nodes)
+            node = nodes[index]
+            if node.name not in exclude_names and node.available and node.session_id:
+                return node
+        return None
+
+    def _is_node_ready(self) -> bool:
+        return self._select_ready_node() is not None
+
+    def _mark_node_unavailable(self, error: Exception | str):
+        self.node_ready.clear()
+        self.node_error = str(error)
+
+    def _schedule_node_connect(self):
+        if self._node_connect_task and not self._node_connect_task.done():
+            return
+        self._node_connect_task = self.bot.loop.create_task(self.add_lavalink_node())
+
     def _get_or_create_client(self) -> lavalink.Client:
         if self.client:
             return self.client
@@ -133,7 +308,7 @@ class MusicService:
         user_id = self._bot_user_id()
         client = getattr(self.bot, "lavalink", None)
         if not isinstance(client, lavalink.Client):
-            client = lavalink.Client(user_id=user_id)
+            client = lavalink.Client(user_id=user_id, player=ManualQueuePlayer)
             self.bot.lavalink = client
 
         self.client = client
@@ -164,10 +339,14 @@ class MusicService:
             (lavalink.TrackEndEvent, self._handle_track_end),
             (lavalink.TrackExceptionEvent, self._handle_track_exception),
             (lavalink.TrackStuckEvent, self._handle_track_stuck),
+            (lavalink.NodeDisconnectedEvent, self._handle_node_disconnected),
+            (lavalink.NodeReadyEvent, self._handle_node_ready),
         ]
         client.add_event_hook(self._handle_track_end, event=lavalink.TrackEndEvent)
         client.add_event_hook(self._handle_track_exception, event=lavalink.TrackExceptionEvent)
         client.add_event_hook(self._handle_track_stuck, event=lavalink.TrackStuckEvent)
+        client.add_event_hook(self._handle_node_disconnected, event=lavalink.NodeDisconnectedEvent)
+        client.add_event_hook(self._handle_node_ready, event=lavalink.NodeReadyEvent)
         self.bot._music_lavalink_event_hooks = hooks
         self._event_hooks_registered = True
 
@@ -180,7 +359,7 @@ class MusicService:
             await interaction.followup.send("請先加入一個語音頻道。", ephemeral=True)
             return None
 
-        player = self.client.player_manager.create(interaction.guild.id)
+        player = self.client.player_manager.create(interaction.guild.id, cls=ManualQueuePlayer)
         voice_client = interaction.guild.voice_client
         bot_voice = getattr(interaction.guild.me, "voice", None)
 
@@ -206,14 +385,16 @@ class MusicService:
         return player
 
     async def ensure_node_ready(self, interaction: Interaction) -> bool:
-        if self.node_ready.is_set():
+        if self.node_ready.is_set() and self._is_node_ready():
             return True
 
-        if self.node_error:
-            self.bot.loop.create_task(self.add_lavalink_node())
+        self.node_ready.clear()
+        self._schedule_node_connect()
 
         try:
             await asyncio.wait_for(self.node_ready.wait(), timeout=25)
+            if not self._is_node_ready():
+                raise asyncio.TimeoutError
             return True
         except asyncio.TimeoutError:
             message = "Lavalink 節點尚未連線，請稍後再試。"
@@ -264,7 +445,7 @@ class MusicService:
         interaction: Interaction,
     ) -> tuple[list[lavalink.AudioTrack], str | None]:
         try:
-            result = await self.client.get_tracks(link, node=player.node)
+            result = await self._get_tracks_with_retry(player, link)
         except Exception as exc:
             await interaction.followup.send(f"查詢歌曲失敗：`{exc}`", ephemeral=True)
             return [], None
@@ -284,11 +465,75 @@ class MusicService:
 
         return [result.tracks[0]], None
 
-    async def start_track(self, guild: nextcord.Guild, player: lavalink.DefaultPlayer, queued: QueuedTrack):
+    async def start_track(
+        self,
+        guild: nextcord.Guild,
+        player: lavalink.DefaultPlayer,
+        queued: QueuedTrack,
+        *,
+        reset_failures: bool = True,
+    ):
         state = self.get_state(guild.id)
         state.current = queued
+        if reset_failures:
+            queued.failed_nodes.clear()
         queued.track.requester = queued.requester_id
-        await player.play(queued.track, volume=self.effective_volume(state.volume))
+        await self._play_with_retry(player, queued.track, volume=self.effective_volume(state.volume))
+
+    async def _get_tracks_with_retry(self, player: lavalink.DefaultPlayer, link: str) -> lavalink.LoadResult:
+        last_error: Exception | None = None
+        tried_nodes: set[str] = set()
+
+        for _ in range(max(1, len(constants.LAVALINK_NODES))):
+            node = player.node or self._select_ready_node(exclude_names=tried_nodes)
+            if not node:
+                break
+
+            tried_nodes.add(node.name)
+            try:
+                result = await self.client.get_tracks(link, node=node)
+                if result.load_type != lavalink.LoadType.ERROR:
+                    return result
+                message = result.error.message if result.error else "Lavalink load error"
+                last_error = lavalink.LavalinkError(message)
+            except (aiohttp.ClientError, lavalink.LavalinkError, OSError, asyncio.TimeoutError) as exc:
+                last_error = exc
+
+            self._mark_node_unavailable(last_error)
+            await self._recover_node(player, exclude_names=tried_nodes)
+
+        if last_error:
+            raise last_error
+        raise RuntimeError("No available Lavalink node.")
+
+    async def _play_with_retry(self, player: lavalink.DefaultPlayer, track: lavalink.AudioTrack, *, volume: int):
+        try:
+            await player.play(track, volume=volume)
+        except (aiohttp.ClientError, lavalink.LavalinkError, OSError, asyncio.TimeoutError) as exc:
+            self._mark_node_unavailable(exc)
+            await self._recover_node(player)
+            await player.play(track, volume=volume)
+
+    async def _recover_node(self, player: lavalink.DefaultPlayer, *, exclude_names: set[str] | None = None):
+        node = self._select_next_ready_node(player.node, exclude_names=exclude_names)
+        if node:
+            self._node_cursor = self._node_index(node.name)
+            if player.node != node:
+                await player.change_node(node)
+            self.node_ready.set()
+            self.node_error = None
+            return
+
+        node = self._select_next_ready_node(player.node, exclude_names=exclude_names) or self._select_ready_node(
+            exclude_names=exclude_names
+        )
+        if not node:
+            node = await self._connect_next_configured_node(exclude_names=exclude_names)
+        if not node or not node.available:
+            raise RuntimeError("Lavalink node did not reconnect.")
+        self._node_cursor = self._node_index(node.name)
+        if player.node != node:
+            await player.change_node(node)
 
     async def play_next(self, guild: nextcord.Guild, player: lavalink.DefaultPlayer):
         state = self.get_state(guild.id)
@@ -302,7 +547,7 @@ class MusicService:
 
         if not state.queue:
             state.current = None
-            await player.stop()
+            player.current = None
             return
 
         await self.start_track(guild, player, self.pop_next_track(state))
@@ -361,23 +606,82 @@ class MusicService:
 
     async def _handle_track_end(self, event: lavalink.TrackEndEvent):
         print(f"(music) track ended: reason={event.reason.value}")
-        if event.reason in {lavalink.EndReason.REPLACED, lavalink.EndReason.CLEANUP, lavalink.EndReason.STOPPED}:
+        if event.reason in (lavalink.EndReason.REPLACED, lavalink.EndReason.CLEANUP, lavalink.EndReason.STOPPED):
             return
 
         await self._advance_after_event(event.player)
 
     async def _handle_track_exception(self, event: lavalink.TrackExceptionEvent):
+        if await self._retry_current_on_next_node(event.player):
+            return
         await self._advance_after_event(event.player)
 
     async def _handle_track_stuck(self, event: lavalink.TrackStuckEvent):
+        if await self._retry_current_on_next_node(event.player):
+            return
         await self._advance_after_event(event.player)
+
+    async def _retry_current_on_next_node(self, player: lavalink.DefaultPlayer) -> bool:
+        guild = self.bot.get_guild(player.guild_id)
+        if not guild:
+            return False
+
+        state = self.get_state(guild.id)
+        if not state.current:
+            return False
+
+        if player.node:
+            state.current.failed_nodes.add(player.node.name)
+
+        if len(state.current.failed_nodes) >= len(constants.LAVALINK_NODES):
+            print("(music) all Lavalink nodes failed for current track; advancing queue.")
+            return False
+
+        try:
+            await self._recover_node(player, exclude_names=state.current.failed_nodes)
+            await self.start_track(guild, player, state.current, reset_failures=False)
+            print(f"(music) retried current track on Lavalink node: {player.node.name}")
+            return True
+        except (aiohttp.ClientError, lavalink.LavalinkError, OSError, asyncio.TimeoutError, RuntimeError) as exc:
+            self._mark_node_unavailable(exc)
+            print(f"(music) failed to retry current track on next Lavalink node: {exc}")
+            return False
+
+    async def _handle_node_disconnected(self, event: lavalink.NodeDisconnectedEvent):
+        if event.node.name not in constants.LAVALINK_LABELS:
+            return
+        if not self._select_ready_node(exclude_names={event.node.name}):
+            self.node_ready.clear()
+
+        reason = event.reason or "websocket disconnected"
+        self.node_error = f"{event.node.name}: {reason}"
+        count = self._node_disconnect_counts.get(event.node.name, 0) + 1
+        self._node_disconnect_counts[event.node.name] = count
+        if count == 3 or count % 5 == 0:
+            print(f"(music) Lavalink node unstable: {self.node_error} ({count} disconnects)")
+
+    async def _handle_node_ready(self, event: lavalink.NodeReadyEvent):
+        if event.node.name not in constants.LAVALINK_LABELS:
+            return
+        self._node_cursor = self._node_index(event.node.name)
+        self.node_ready.set()
+        self.node_error = None
+        count = self._node_disconnect_counts.get(event.node.name, 0)
+        if count >= 3:
+            print(f"(music) Lavalink node recovered: {event.node.name} resumed={event.resumed}")
 
     async def _advance_after_event(self, player: lavalink.DefaultPlayer):
         guild = self.bot.get_guild(player.guild_id)
         if not guild:
             return
 
-        await self.play_next(guild, player)
+        try:
+            await self.play_next(guild, player)
+        except (aiohttp.ClientError, lavalink.LavalinkError, OSError) as exc:
+            self._mark_node_unavailable(exc)
+            print(f"(music) failed to advance queue: {exc}")
+            return
+
         if self.panel_refresh_callback:
             await self.panel_refresh_callback(guild)
 

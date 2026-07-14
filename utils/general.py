@@ -5,7 +5,7 @@ from typing import Union
 
 from datetime import timezone ,timedelta, datetime
 from nextcord import Color
-from new_bot.core import constants
+from core import constants
 
 class Toolkit():
     def __init__(self, message = None, debug=False):

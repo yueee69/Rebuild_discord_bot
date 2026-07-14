@@ -1,6 +1,7 @@
 import os
 import sys
 import traceback
+import logging
 import nextcord
 import atexit
 
@@ -8,10 +9,13 @@ from managers.lifecycle import close_all
 from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+load_dotenv()
 
 from nextcord.ext import commands
 
 Debug = True
+logging.getLogger("lavalink.transport").setLevel(logging.ERROR)
+logging.getLogger("lavalink.nodemanager").setLevel(logging.ERROR)
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix='!',intents=intents)
 commands_path = ["commands/impl", "events"]
@@ -76,7 +80,6 @@ def main():
             bot.load_extension(extension)
                 
         atexit.register(close_all)
-        load_dotenv()
         bot.run(os.environ.get("BOT_TOKEN"))
                 
     except Exception as e:

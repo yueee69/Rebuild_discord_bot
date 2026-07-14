@@ -113,7 +113,7 @@ class MusicPanelPage:
         self.state = music.service.get_state(guild.id)
 
     def get_components(self) -> BASIC_VIEW:
-        view = MusicControlView(self.music, self.guild.id) if self.include_view and self.state.current else None
+        view = MusicControlView(self.music, self.guild.id, has_current=bool(self.state.current)) if self.include_view else None
         return BASIC_VIEW.views(
             embed=self.build_embed(),
             view=view,
@@ -215,12 +215,17 @@ def truncate_track_label(music, track, limit: int) -> str:
 
 
 class MusicControlView(nextcord.ui.View):
-    def __init__(self, music, guild_id: int):
+    def __init__(self, music, guild_id: int, has_current: bool = True):
         super().__init__(timeout=None)
         self.music = music
         self.guild_id = guild_id
+        self.has_current = has_current
+        self._sync_buttons()
 
     async def interaction_check(self, interaction: Interaction) -> bool:
+        if getattr(interaction, "data", {}).get("custom_id") == "music_node_info":
+            return bool(interaction.guild and interaction.guild.id == self.guild_id)
+
         if interaction.guild and interaction.guild.id == self.guild_id:
             return await self.music.service.ensure_same_voice(interaction)
 
@@ -255,9 +260,28 @@ class MusicControlView(nextcord.ui.View):
         state = self.music.service.get_state(self.guild_id)
         await interaction.response.send_modal(VolumeModal(self.music, state.volume))
 
+    @nextcord.ui.button(label="🌐 節點資訊", style=nextcord.ButtonStyle.primary, custom_id="music_node_info", row=1)
+    async def node_info(self, button: nextcord.ui.Button, interaction: Interaction):
+        await self.music.show_node_info(interaction)
+
     @nextcord.ui.button(label="⏹️ 停止離開", style=nextcord.ButtonStyle.danger, custom_id="music_stop", row=1)
     async def stop(self, button: nextcord.ui.Button, interaction: Interaction):
         await self.music.stop_and_disconnect(interaction)
+
+    def _sync_buttons(self):
+        if self.has_current:
+            return
+
+        for item in (
+            self.toggle_pause,
+            self.skip,
+            self.repeat,
+            self.queue,
+            self.history,
+            self.volume,
+            self.stop
+        ):
+            self.remove_item(item)
 
 
 class VolumeModal(nextcord.ui.Modal):
